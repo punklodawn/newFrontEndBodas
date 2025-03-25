@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 10% 98%;
+    --foreground: 120 15% 40%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 120 15% 40%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 15% 40%;
+
+    --primary: 120 15% 40%;
+    --primary-foreground: 60 10% 98%;
+
+    --secondary: 120 15% 90%;
+    --secondary-foreground: 120 15% 40%;
+
+    --muted: 120 15% 90%;
+    --muted-foreground: 120 15% 60%;
+
+    --accent: 120 15% 90%;
+    --accent-foreground: 120 15% 40%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 120 15% 85%;
+    --input: 120 15% 85%;
+    --ring: 120 15% 40%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.nature-gradient {
+  background: linear-gradient(to right, #7d9d7f, #7d9d7f, #7d9d7f, #7d9d7f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nature-gradient-black {
+  background: linear-gradient(to right, #414040, #414040, #414040, #414040);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Colores personalizados de la paleta */
+.bg-nature-white {
+  background-color: #f2f2f0;
+}
+
+.bg-nature-cream {
+  background-color: #e5e6d8;
+}
+
+.bg-nature-sage {
+  background-color: #c5d1b8;
+}
+
+.bg-nature-green {
+  background-color: #7d9d7f;
+}
+
+.text-nature-white {
+  color: #f2f2f0;
+}
+
+.text-nature-cream {
+  color: #e5e6d8;
+}
+
+.text-nature-sage {
+  color: #c5d1b8;
+}
+
+.text-nature-green {
+  color: #7d9d7f;
+}
+
+.text-nature-black {
+  color: #456640;
+}
+
+.border-nature-white {
+  border-color: #f2f2f0;
+}
+
+.border-nature-cream {
+  border-color: #e5e6d8;
+}
+
+.border-nature-sage {
+  border-color: #c5d1b8;
+}
+
+.border-nature-green {
+  border-color: #7d9d7f;
+}
+
+.from-nature-white {
+  --tw-gradient-from: #f2f2f0 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(130, 192, 105, 0.596) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.from-nature-cream {
+  --tw-gradient-from: #ffffff var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(232, 240, 236, 0.664) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.from-nature-sage {
+  --tw-gradient-from: #c5d1b8 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(58, 163, 128, 0.61) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.from-nature-green {
+  --tw-gradient-from: #c5d1b8 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(168, 218, 201, 0.61) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.to-nature-cream {
+  --tw-gradient-to: #e5e6d8 var(--tw-gradient-to-position);
+}
+
+.to-nature-sage {
+  --tw-gradient-to: #c2d1b8 var(--tw-gradient-to-position);
+}
+
+.to-nature-green {
+  --tw-gradient-to: #7d9d7f var(--tw-gradient-to-position);
+}
+
