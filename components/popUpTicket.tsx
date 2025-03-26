@@ -4,10 +4,8 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import {
-  Plane,
-  Heart,
-} from "lucide-react"
+import {Plane, Heart} from "lucide-react"
+import confetti from "canvas-confetti"
 
 interface PopUpTicketProps {
     onClose: () => void;
@@ -29,6 +27,40 @@ interface PopUpTicketProps {
       });
 
       const [seatNumber, setSeatNumber] = useState<string>("");
+
+        // Función para mostrar confeti
+  const showConfetti = () => {
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.inset = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.zIndex = "999";
+    canvas.style.pointerEvents = "none";
+    document.body.appendChild(canvas);
+
+    const myConfetti = confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+
+    myConfetti({
+      particleCount: 100,
+      spread: 160,
+      colors: ["#f2f2f0", "#e5e6d8", "#c5d1b8", "#7d9d7f"],
+      origin: { y: 0.6 },
+    });
+
+    setTimeout(() => {
+      document.body.removeChild(canvas);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    // Mostrar confeti cuando se abre el ticket
+    const timer = setTimeout(() => {
+      showConfetti();
+    }, 500); }, []);
 
       useEffect(() => {
         // Obtener datos del localStorage al cargar el componente
@@ -105,7 +137,7 @@ interface PopUpTicketProps {
                 <div className="flex justify-between mb-4">
                   <div>
                     <p className="text-xs text-nature-green">PASAJERO</p>
-                    <p className="font-medium">Invitado {userData.name}</p>
+                    <p className="font-medium">{userData.name}</p>
                   </div>
                   <div>
                     <p className="text-xs text-nature-green">ASIENTOS</p>

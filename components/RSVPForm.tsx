@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import NotificationPopup from "@/components/NotifiacionPopup";
 import PopUpTicket from "@/components/popUpTicket"
 import { supabase } from "../supabase/supabase";
+import { useRSVP } from "@/context/RSVPContext";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
+
 
 interface FormData {
   name: string;
@@ -24,7 +27,7 @@ const RSVPForm = () => {
     children: "0",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+  const {alreadyConfirmed, setAlreadyConfirmed } = useRSVP();
   const [notification, setNotification] = useState<{message: string;type: "success" | "error";} | null>(null);
   const [showTicket, setShowTicket] = useState(false);
   const [savedData, setSavedData] = useState<FormData | null>(null);
@@ -53,7 +56,6 @@ const RSVPForm = () => {
   const handleCloseTicket = () => {
     setShowTicket(false);
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,25 +107,47 @@ const RSVPForm = () => {
 
   if (alreadyConfirmed) {
     return (
-      <div className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage p-40 text-center">
-        <h3 className="text-xl font-bold text-nature-green mb-4">¡Ya confirmaste tu asistencia!</h3>
-        <Button onClick={handleOpenTicket}
-          className="w-full bg-gradient-to-r from-nature-green to-nature-sage hover:from-nature-sage hover:to-nature-cream text-white h-12 text-lg"
-        >
-          Ver Ticket
-        </Button>
+        <>
+        <div className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage p-40 text-center">
+            <h3 className="text-xl font-bold text-nature-green mb-4">¡Ya confirmaste tu asistencia!</h3>
+            <Button onClick={handleOpenTicket}
+            className="w-full bg-gradient-to-r from-nature-green to-nature-sage hover:from-nature-sage hover:to-nature-cream text-white h-12 text-lg"
+            >
+            Ver Ticket
+            </Button>
 
-        {/* Popup del Ticket */}
-        {showTicket && (
-            <PopUpTicket
-            onClose={handleCloseTicket}
-            />
-        )}
       </div>
+      <div>
+            {/* Popup del Ticket */}
+            {showTicket && (
+                <PopUpTicket
+                onClose={handleCloseTicket}
+                />
+            )}
+      </div>
+        </>
     );
   }
 
   return (
+    <>
+    <div className="max-w-4xl w-full mx-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="text-center mb-12 pointer-events-none"
+      >
+      <div className="inline-block bg-nature-sage text-nature-green px-3 py-1 rounded-full text-sm font-medium mb-4 border border-nature-cream">
+        PASO 1
+      </div>
+      <h2 className="text-3xl md:text-4xl font-bold mb-4 nature-gradient">Confirma tu Asistencia</h2>
+      <p className="text-lg text-nature-green max-w-2xl mx-auto">
+        Por favor completa tu check-in antes del 15 de mayo para asegurar tu asiento en nuestro vuelo hacia la
+        felicidad
+      </p>
+    </motion.div>
+
     <div className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage">
       <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-green">
         <h3 className="text-xl font-bold">FORMULARIO DE CHECK-IN</h3>
@@ -219,6 +243,9 @@ const RSVPForm = () => {
           onClose={() => setNotification(null)}/>)}
       </div>
     </div>
+  </div>
+    
+    </>
   );
 };
 

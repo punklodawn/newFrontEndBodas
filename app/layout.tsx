@@ -9,8 +9,8 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: "María & Juan - Invitación de Boda",
-  description: "Te invitamos a nuestra boda el 15 de Junio, 2025",
+  title: "Lilian & Miguel - Invitación de Boda",
+  description: "Te invitamos a nuestra boda el 14 de Febrero, 2026",
 }
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head />
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${inter.variable} font-serif`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
         </ThemeProvider>
