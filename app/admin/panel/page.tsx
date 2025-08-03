@@ -3,6 +3,8 @@
 import { Fragment, useState, useEffect } from 'react'
 import { supabase } from '@/supabase/supabase'
 import { useRouter } from 'next/navigation'
+import AdminGuard from '@/components/AdminGuard'
+
 
 interface MainGuest {
   id?: number;  // id es opcional porque se asigna al insertar en BD
@@ -201,6 +203,7 @@ export default function AdminPanel() {
   }
 
   return (
+        <AdminGuard>
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Panel de Administración</h1>
       
@@ -393,5 +396,6 @@ export default function AdminPanel() {
         )}
       </div>
     </div>
+    </AdminGuard>
   )
 }
