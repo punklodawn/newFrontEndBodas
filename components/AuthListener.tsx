@@ -11,13 +11,9 @@ export default function AuthListener() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
-
-      if (error) {
-        console.error('Error checking session:', error)
-        return
-      }
-
+      // Forzar sincronización de la sesión
+      const { data: { session } } = await supabase.auth.getSession()
+      
       const isAdmin = session?.user?.email === ADMIN_EMAIL
       const isAdminRoute = pathname?.startsWith('/admin')
 
@@ -36,9 +32,12 @@ export default function AuthListener() {
         const isAdminRoute = pathname?.startsWith('/admin')
 
         if (['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
-          if (isAdmin && pathname === '/login') {
-            router.push('/admin/panel')
-          }
+          // Esperar 1 segundo para asegurar que las cookies están establecidas
+          setTimeout(() => {
+            if (isAdmin && pathname === '/login') {
+              router.push('/admin/panel')
+            }
+          }, 1000)
         } else if (event === 'SIGNED_OUT' && isAdminRoute) {
           router.push('/login')
         }

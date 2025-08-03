@@ -8,23 +8,21 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   const supabase = createMiddlewareClient({ req: request, res: response })
 
-  // Obtener sesión
-  const { data: { session }, error } = await supabase.auth.getSession()
+  // Forzar sincronización de cookies
+  await supabase.auth.getSession()
 
-  if (error) {
-    console.error('Error obteniendo sesión:', error)
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
+  const { data: { session } } = await supabase.auth.getSession()
+  
   const isAdmin = session?.user?.email === ADMIN_EMAIL
   const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
   const isLoginRoute = request.nextUrl.pathname === '/login'
 
-  // Redirecciones
+  // Redirigir si no es admin en ruta admin
   if (isAdminRoute && !isAdmin) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Redirigir si es admin y está en login
   if (isLoginRoute && isAdmin) {
     return NextResponse.redirect(new URL('/admin/panel', request.url))
   }

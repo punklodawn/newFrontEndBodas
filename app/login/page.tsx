@@ -18,12 +18,21 @@ export default function LoginPage() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user?.email === ADMIN_EMAIL) {
-        router.push('/admin/panel')
+        setTimeout(() => router.push('/admin/panel'), 500)
       } else {
         setLoading(false)
       }
     }
     checkSession()
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user?.email === ADMIN_EMAIL) {
+        router.push('/admin/panel')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+
   }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
