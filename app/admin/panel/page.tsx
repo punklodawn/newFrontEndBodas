@@ -2,6 +2,7 @@
 'use client'
 import { Fragment, useState, useEffect } from 'react'
 import { supabase } from '@/supabase/supabase'
+import { useRouter } from 'next/navigation'
 
 interface MainGuest {
   id?: number;  // id es opcional porque se asigna al insertar en BD
@@ -19,6 +20,7 @@ interface CompanionGuest {
 }
 
 export default function AdminPanel() {
+    const router = useRouter()
   const [mainGuest, setMainGuest] = useState<MainGuest>({
     name: '',
     email: '',
@@ -33,6 +35,17 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
   const [expandedGuests, setExpandedGuests] = useState<Record<number, boolean>>({})
+
+
+    useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user?.email !== 'miguelmansillarev22@gmail.com') {
+        router.push('/login')
+      }
+    }
+    checkAuth()
+  }, [router])
 
   // Cargar lista de invitados y sus acompañantes al montar el componente
   useEffect(() => {

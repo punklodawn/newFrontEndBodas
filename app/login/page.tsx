@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/supabase/supabase'
 
+const ADMIN_EMAIL = 'miguelmansillarev22@gmail.com'
+
+
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
@@ -11,40 +14,25 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
-  // Verificación manual con botón
-  const checkSessionManually = async () => {
-    try {
-      setLoading(true)
+  useEffect(() => {
+    const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user?.email === 'miguelmansillarev22@gmail.com') {
+      if (session?.user?.email === ADMIN_EMAIL) {
         router.push('/admin/panel')
       } else {
-        setError('No se encontró sesión activa.')
+        setLoading(false)
       }
-    } catch (err) {
-      setError('Error al verificar sesión.')
-      console.error(err)
-    } finally {
-      setLoading(false)
     }
-  }
-
-  // Verificación inicial simple (solo para mostrar el formulario rápidamente)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 500) // Espera corta para mostrar el formulario
-
-    return () => clearTimeout(timer)
-  }, [])
+    checkSession()
+  }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSent(false)
 
-    if (!email) {
-      setError('Por favor ingresa un email.')
+    if (email !== ADMIN_EMAIL) {
+      setError('Acceso restringido a administradores')
       return
     }
 
@@ -52,7 +40,8 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/panel`
+          emailRedirectTo: `${window.location.origin}/admin/panel`,
+              shouldCreateUser: false // Evita crear nuevos usuarios
         }
       })
 
@@ -97,15 +86,6 @@ export default function LoginPage() {
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition mb-2"
         >
           Enviar Magic Link
-        </button>
-
-        {/* Botón para verificar sesión manualmente */}
-        <button
-          type="button"
-          onClick={checkSessionManually}
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition mb-4"
-        >
-          Verificar Sesión y Redirigir
         </button>
 
         {sent && (
