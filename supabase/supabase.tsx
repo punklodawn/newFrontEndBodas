@@ -1,7 +1,13 @@
-// supabase.ts
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://llilswxrkaroyatuhokc.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsaWxzd3hya2Fyb3lhdHVob2tjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg5NzcwNDQsImV4cCI6MjA1NDU1MzA0NH0.1yaJySmAljR7TGzghHbCyPUDtkyoQEeH54SZVJYmFL8';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'implicit'
+  }
+})
