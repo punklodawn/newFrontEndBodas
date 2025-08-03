@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user?.email === ADMIN_EMAIL) {

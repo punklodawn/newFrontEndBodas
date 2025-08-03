@@ -10,10 +10,11 @@ export default function AuthListener() {
   const pathname = usePathname()
 
   useEffect(() => {
+    // Solo se ejecuta en el cliente
+    if (typeof window === 'undefined') return
+
     const checkAuth = async () => {
-      // Forzar sincronización de la sesión
       const { data: { session } } = await supabase.auth.getSession()
-      
       const isAdmin = session?.user?.email === ADMIN_EMAIL
       const isAdminRoute = pathname?.startsWith('/admin')
 
@@ -32,12 +33,9 @@ export default function AuthListener() {
         const isAdminRoute = pathname?.startsWith('/admin')
 
         if (['SIGNED_IN', 'TOKEN_REFRESHED'].includes(event)) {
-          // Esperar 1 segundo para asegurar que las cookies están establecidas
-          setTimeout(() => {
-            if (isAdmin && pathname === '/login') {
-              router.push('/admin/panel')
-            }
-          }, 1000)
+          if (isAdmin && pathname === '/login') {
+            router.push('/admin/panel')
+          }
         } else if (event === 'SIGNED_OUT' && isAdminRoute) {
           router.push('/login')
         }
