@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   motion,
   useScroll,
-  useTransform,
 } from "framer-motion";
 import {
   Gift,
@@ -22,6 +21,8 @@ import { RSVPProvider } from "@/context/RSVPContext";
 import CountdownSection from "@/components/CountdownSection";
 import BoardingSection from "@/components/BoardingSection";
 import FlyingPlaneAnimation from "@/components/FlyingPlaneAnimation";
+import FlightSection from '@/components/FlightSection'
+
 
 export default function WeddingFlightInvitation() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -40,38 +41,6 @@ export default function WeddingFlightInvitation() {
     target: mainRef,
     offset: ["start start", "end end"],
   });
-
-  const cloudOpacity1 = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.5],
-    [1, 0.5, 0]
-  );
-  const cloudOpacity2 = useTransform(
-    scrollYProgress,
-    [0.3, 0.6, 0.8],
-    [0, 1, 0]
-  );
-  const cloudOpacity3 = useTransform(
-    scrollYProgress,
-    [0.5, 0.8, 1],
-    [0, 0.5, 1]
-  );
-
-  const cloudTranslateY1 = useTransform(
-    scrollYProgress,
-    [0, 0.5],
-    ["0%", "100%"]
-  );
-  const cloudTranslateY2 = useTransform(
-    scrollYProgress,
-    [0.3, 0.8],
-    ["-100%", "0%"]
-  );
-  const cloudTranslateY3 = useTransform(
-    scrollYProgress,
-    [0.5, 1],
-    ["-200%", "0%"]
-  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -127,108 +96,9 @@ export default function WeddingFlightInvitation() {
 
       {/* Boarding Section */}
       <BoardingSection/>
+
+      <FlightSection />
     
-
-      {/* Flight Section */}
-      <section
-        id="flight"
-        className="min-h-screen flex flex-col items-center justify-center relative py-20 px-4"
-      >
-        <div className="max-w-4xl w-full mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <div className="inline-block bg-nature-sage text-nature-green px-3 py-1 rounded-full text-sm font-medium mb-4 border border-nature-cream">
-              PASO 4
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 nature-gradient">
-              En Vuelo
-            </h2>
-            <p className="text-lg text-nature-green max-w-2xl mx-auto">
-              Disfruta del viaje y de todos los momentos especiales que hemos
-              preparado
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden h-full border border-nature-sage"
-            >
-              <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
-                <h3 className="text-xl font-bold">NUESTRA HISTORIA</h3>
-              </div>
-
-              <div className="p-6 flex flex-col justify-between">
-                <p className="text-nature-green mb-6">
-                  Hace 5 años, nuestros caminos se cruzaron en un vuelo con
-                  destino a París. Lo que comenzó como una conversación casual
-                  entre dos desconocidos, se convirtió en el inicio de nuestra
-                  historia de amor.
-                </p>
-
-                <p className="text-nature-green mb-6">
-                  Desde entonces, hemos compartido innumerables aventuras,
-                  risas, y momentos inolvidables. Cada día juntos ha sido un
-                  nuevo capítulo en nuestro viaje.
-                </p>
-
-                <p className="text-nature-green mb-6">
-                  Hoy, queremos comenzar la aventura más importante de nuestras
-                  vidas, y no podríamos imaginar emprenderla sin ti a nuestro
-                  lado.
-                </p>
-
-                <div className="flex justify-center">
-                  <Heart className="h-12 w-12 text-nature-green" />
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              viewport={{ once: true }}
-              className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage"
-            >
-              <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
-                <h3 className="text-xl font-bold">GALERÍA DE FOTOS</h3>
-              </div>
-
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: i * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ scale: 1.05 }}
-                      className="aspect-square overflow-hidden rounded-xl cursor-pointer border border-nature-sage"
-                    >
-                      <div
-                        className={cn(
-                          "w-full h-full bg-cover bg-center transition-transform duration-500 hover:scale-110",
-                          `bg-[url('/placeholder.svg?height=400&width=400')]`
-                        )}
-                      ></div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* Landing Section */}
       <section

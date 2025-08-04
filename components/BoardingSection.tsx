@@ -108,12 +108,12 @@ export default function BoardingSection() {
             {icon}
           </div>
           {!isLast && (
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 h-10 w-0.5 bg-nature-sage"></div>
+            <div className="absolute top-18 left-1/2 transform -translate-x-1/2 h-10 w-0.5 bg-nature-sage"></div>
           )}
         </div>
         <div className="ml-6">
           <div className="flex items-baseline mb-1">
-            <h4 className="text-xl font-bold text-nature-green mr-3">
+            <h4 className="text-xl font-bold text-nature-green mr-2">
               {title}
             </h4>
             <span className="text-nature-green font-medium">{time}</span>
