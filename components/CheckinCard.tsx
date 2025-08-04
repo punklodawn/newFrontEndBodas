@@ -23,7 +23,7 @@ const CheckinCard = () => {
 
   return (
     <>
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="absolute inset-0 pointer-events-none">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-10"></div>
           </motion.div>
 
@@ -31,7 +31,7 @@ const CheckinCard = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 1, delay: 0.5 }}
             className="text-center mb-8"
           >
             <div className="inline-block bg-nature-sage text-nature-green px-3 py-1 rounded-full text-sm font-medium mb-4 border border-nature-cream">
@@ -45,7 +45,7 @@ const CheckinCard = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 1, delay: 0.5 }}
             className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden mb-8 border border-nature-sage"
           >
             <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-green">
@@ -93,28 +93,32 @@ const CheckinCard = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row justify-between gap-6">
+              <div className="flex flex-col md:flex-row justify-between gap-6 mb-6">
                 <div>
                   <p className="text-sm text-nature-green mb-1">CEREMONIA</p>
                   <div className="flex items-center">
                     <MapPin className="h-5 w-5 text-nature-green mr-2" />
-                    <p className="font-medium">Iglesia San Francisco</p>
+                    <p className="text-sm font-bold">EL TEMPLO CATÓLICO DEL PUEBLO DE LA ESPERANZA</p>
                   </div>
                 </div>
                 <div>
                   <p className="text-sm text-nature-green mb-1">RECEPCIÓN</p>
                   <div className="flex items-center">
                     <Utensils className="h-5 w-5 text-nature-green mr-2" />
-                    <p className="font-medium">Hotel Majestic</p>
+                    <p className="text-sm font-bold">Golf Club - La Esperanza</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="border-t border-dashed border-nature-sage p-6 flex justify-between items-center">
+
               <div className="flex items-center">
                 <Heart className="h-6 w-6 text-nature-green mr-2" />
-                <p className="font-medium">¡No olvides confirmar tu asistencia!</p>
+                <p className="font-medium">
+                  {alreadyConfirmed && (`¡Ya confirmaste tu asistencia!`)}
+                  {!alreadyConfirmed && (`¡No olvides confirmar tu asistencia!`)} 
+                </p>
               </div>
 
               {alreadyConfirmed && (

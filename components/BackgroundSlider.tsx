@@ -17,7 +17,7 @@ export default function BackgroundSlider() {
     setIsVisible(true)
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
-    }, 5000) // Change image every 5 seconds
+    }, 6000) // Change image every 5 seconds
 
     return () => clearInterval(interval)
   }, [])
@@ -31,7 +31,7 @@ export default function BackgroundSlider() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 3 }}
           style={{
             backgroundImage: `url("${images[currentImageIndex]}")`,
             backgroundAttachment: "fixed",

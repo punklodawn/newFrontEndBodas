@@ -3,6 +3,7 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import AuthListener from '@/components/AuthListener'
+import MusicPlayer from '@/components/MusicPlayer'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
           <AuthListener />
+          <MusicPlayer/>
         </ThemeProvider>
       </body>
     </html>

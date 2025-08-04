@@ -42,12 +42,12 @@ export default function BoardingSection() {
 
           <div className="p-6">
             <div className="relative">
-              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-nature-sage"></div>
+              <div className="absolute left-8 top-0 bottom-0 w-0 bg-nature-sage"></div>
 
               <TimelineItem
                 time="19:00"
                 title="Despegue - Ceremonia"
-                description="Nuestra aventura comienza con una hermosa ceremonia en la Iglesia San Pedro."
+                description="Nuestra aventura comienza con una hermosa ceremonia en: El templo catolico del pueblo LA ESPERANZA."
                 icon={<Plane className="h-6 w-6 text-white" />}
               />
 
@@ -72,127 +72,6 @@ export default function BoardingSection() {
                 icon={<Music className="h-6 w-6 text-white" />}
                 isLast={true}
               />
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          viewport={{ once: true }}
-          className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage"
-        >
-          <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
-            <h3 className="text-xl font-bold">MAPA DE RUTA</h3>
-          </div>
-
-          <div className="p-6">
-            <div className="h-48 sm:h-64 md:h-80 bg-nature-cream rounded-xl overflow-hidden relative border border-nature-sage">
-              {/* Fondo del mapa */}
-              <div className="absolute inset-0 bg-[url('/map-pattern.svg')] bg-cover bg-center opacity-20"></div>
-
-              {/* Contenedor de la ruta para manejar mejor el responsive */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Línea de ruta diagonal - ajustada para móvil */}
-                <motion.div
-                  className="absolute h-0.5 sm:h-1 origin-left"
-                  style={{
-                    width: "80%",
-                    background:
-                      "linear-gradient(90deg, rgba(125,157,127,0) 0%, rgba(125,157,127,1) 50%, rgba(125,157,127,0) 100%)",
-                    transform: "rotate(11.5deg)",
-                    left: "10%",
-                    top: "30%",
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                ></motion.div>
-
-                {/* Punto de origen con animación */}
-                <motion.div
-                  className="absolute w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-nature-green border border-white"
-                  style={{
-                    left: "10%",
-                    top: "30%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [1, 0.8, 1],
-                  }}
-                  transition={{
-                    repeat: Number.POSITIVE_INFINITY,
-                    duration: 2,
-                  }}
-                >
-                  <span className="absolute top-0 left-4 text-[10px] sm:text-xs text-nature-green whitespace-nowrap">
-                    Origen
-                  </span>
-                </motion.div>
-
-                <motion.a
-                  href="https://maps.app.goo.gl/Ck6YZMVGHxomQJ4WA"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-nature-green border-2 border-white cursor-pointer hover:bg-nature-sage transition-colors group"
-                  style={{
-                    right: "10%",
-                    bottom: "30%",
-                    transform: "translate(50%, 50%)",
-                  }}
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{
-                    repeat: Number.POSITIVE_INFINITY,
-                    duration: 2,
-                    delay: 1,
-                  }}
-                >
-                  <span className="absolute top-0 right-4 text-[10px] sm:text-xs text-nature-green whitespace-nowrap hover:underline">
-                    Destino
-                  </span>
-                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                  <span className="absolute -bottom-6 right-0 bg-white text-nature-green text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
-                    Ver Destino
-                  </span>
-                </motion.a>
-                {/* Avión animado - ajustado para móvil */}
-                <motion.div
-                  className="absolute w-10 h-10 sm:w-16 sm:h-16 z-10"
-                  style={{
-                    left: "10%",
-                    top: "30%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  animate={{
-                    x: ["0%", "750%"],
-                    y: ["0%", "140%"],
-                    rotate: [-45, 25],
-                  }}
-                  transition={{
-                    repeat: Number.POSITIVE_INFINITY,
-                    duration: 8,
-                    ease: "linear",
-                  }}
-                >
-                  <Plane className="w-5 h-5 sm:w-8 sm:h-8 text-nature-green" />
-                  {/* Estela del avión */}
-                  <motion.div
-                    className="absolute left-full w-8 sm:w-14 h-0.5 bg-nature-green opacity-70"
-                    animate={{
-                      scaleX: [0, 1, 0],
-                      opacity: [0, 0.7, 0],
-                    }}
-                    transition={{
-                      repeat: Number.POSITIVE_INFINITY,
-                      duration: 1,
-                      ease: "easeOut",
-                    }}
-                  />
-                </motion.div>
-              </div>
             </div>
           </div>
         </motion.div>
@@ -225,11 +104,11 @@ export default function BoardingSection() {
         className="flex mb-8"
       >
         <div className="relative">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-nature-green to-nature-sage flex items-center justify-center">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-r from-nature-green to-nature-sage flex items-center justify-center">
             {icon}
           </div>
           {!isLast && (
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 h-8 w-0.5 bg-nature-sage"></div>
+            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 h-10 w-0.5 bg-nature-sage"></div>
           )}
         </div>
         <div className="ml-6">
