@@ -5,9 +5,9 @@ import Image from 'next/image'
 
 // Reemplaza estas URLs con tus imágenes reales
 const galleryImages = [
-  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.16.38_66982df8_p4ffux.jpg',
-  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.15.33_313ba5a7_bzxuud.jpg',
-  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742185330/20221010_160037_ngeund.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359891/IMG-20220529-WA0000_xoxtde.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359891/IMG-20221009-WA0035_sqfqh8.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359892/1754355344039_cikox8.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.16.36_92b46dbc_scq6w1.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354535970_mygrmh.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354183966_t7nv4z.jpg'
