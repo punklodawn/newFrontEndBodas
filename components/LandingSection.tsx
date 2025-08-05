@@ -1,8 +1,26 @@
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { Button } from "./ui/button";
+import { useState, useEffect  } from "react";
+import PopUpTicket from "@/components/popUpTicket";
+import { useRSVP } from "@/context/RSVPContext";
 
 const LandingSection = () => {
+   const [showTicket, setShowTicket] = useState(false);
+   const { alreadyConfirmed, checkConfirmationStatus} = useRSVP();
+
+     useEffect(() => {
+    checkConfirmationStatus();
+  }, []);
+
+  const handleOpenTicket = () => {
+    setShowTicket(true);
+  };
+
+  const handleCloseTicket = () => {
+    setShowTicket(false);
+  };
+
   return (
     <section
       id="landing"
@@ -59,11 +77,16 @@ const LandingSection = () => {
               compartir con nosotros el inicio de esta nueva etapa.
             </p>
 
-            <div className="flex justify-center">
-              <Button className="bg-gradient-to-r from-nature-green to-nature-sage hover:from-nature-sage hover:to-nature-cream text-white px-8">
-                Ver mi Ticket de Nuevo
-              </Button>
-            </div>
+            {alreadyConfirmed && (
+                  <div className="flex justify-center">
+                    <Button 
+                      onClick={handleOpenTicket}
+                      className="bg-gradient-to-r from-nature-green to-nature-sage hover:from-nature-sage hover:to-nature-cream text-white px-8"
+                    >
+                      Ver mi Ticket de Nuevo
+                    </Button>
+                  </div>
+                )}
           </div>
         </motion.div>
 
@@ -99,6 +122,9 @@ const LandingSection = () => {
           </div>
         </motion.div>
       </div>
+            {showTicket && (
+        <PopUpTicket onClose={handleCloseTicket} />
+      )}
     </section>
   );
 };

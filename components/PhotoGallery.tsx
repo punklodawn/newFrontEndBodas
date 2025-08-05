@@ -9,6 +9,8 @@ const galleryImages = [
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.15.33_313ba5a7_bzxuud.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742185330/20221010_160037_ngeund.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.16.36_92b46dbc_scq6w1.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354535970_mygrmh.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354183966_t7nv4z.jpg'
   // Agrega más imágenes según necesites
 ]
 
@@ -18,7 +20,10 @@ export default function PhotoGallery() {
   "Nuestro primer viaje juntos",
   "Celebrando nuestro aniversario",
   "Preparativos de la boda",
-  "Momento especial en la playa"
+  "Momento especial en la playa",
+  "Viaje en las alturas",
+  "Viaje por las cataratas"
+
 ])
 
   const openLightbox = (index: number) => {

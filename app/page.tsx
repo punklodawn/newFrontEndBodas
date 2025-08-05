@@ -91,7 +91,9 @@ export default function WeddingFlightInvitation() {
       <FlightSection />
 
       {/* Landing Section */}
-      <LandingSection/>
+      <RSVPProvider>
+        <LandingSection/>
+      </RSVPProvider>
 
       {/* Baggage Section */}
       <BaggageSection/>

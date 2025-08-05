@@ -1,8 +1,9 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 interface RSVPContextType {
   alreadyConfirmed: boolean;
   setAlreadyConfirmed: (confirmed: boolean) => void;
+  checkConfirmationStatus: () => boolean;
 }
 
 const RSVPContext = createContext<RSVPContextType | undefined>(undefined);
@@ -10,8 +11,25 @@ const RSVPContext = createContext<RSVPContextType | undefined>(undefined);
 export const RSVPProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
 
+  // Función para verificar el estado de confirmación
+  const checkConfirmationStatus = () => {
+    const savedData = localStorage.getItem("rsvpConfirmation");
+    const isConfirmed = !!savedData;
+    setAlreadyConfirmed(isConfirmed);
+    return isConfirmed;
+  };
+
+  // Verificar al cargar el componente
+  useEffect(() => {
+    checkConfirmationStatus();
+  }, []);
+
   return (
-    <RSVPContext.Provider value={{ alreadyConfirmed, setAlreadyConfirmed }}>
+    <RSVPContext.Provider value={{ 
+      alreadyConfirmed, 
+      setAlreadyConfirmed,
+      checkConfirmationStatus 
+    }}>
       {children}
     </RSVPContext.Provider>
   );

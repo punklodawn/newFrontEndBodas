@@ -46,7 +46,7 @@ const BaggageSection = () => {
               obsequiarnos algo, aquí hay algunas opciones:
             </p>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <GiftItem
                 icon={<Luggage className="h-10 w-10 text-nature-green" />}
                 title="Luna de Miel"
