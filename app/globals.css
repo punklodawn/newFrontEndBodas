@@ -148,3 +148,13 @@
   --tw-gradient-to: #7d9d7f var(--tw-gradient-to-position);
 }
 
+.music-player {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.music-player.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+

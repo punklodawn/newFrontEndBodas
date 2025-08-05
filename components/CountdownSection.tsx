@@ -5,11 +5,13 @@ import {
     motion,
 } from "framer-motion";
   import {
-    Calendar,
+    CalendarHeart,
     MapPin,
     Users,
     Gift,
     Clock,
+    Utensils,
+    HeartPulse 
   } from "lucide-react";
 
 
@@ -117,21 +119,24 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
     <div className="p-6">
       <div className="grid md:grid-cols-2 gap-6">
         <InfoItem
-          icon={<Calendar className="h-10 w-10 text-nature-green" />}
+          icon={<CalendarHeart className="h-10 w-10 text-nature-green" />}
           title="Fecha y Hora"
-          description="14 de Febrero, 2026 a las 20:00 horas. Te recomendamos llegar 30 minutos antes."
+          description="Nuestro vuelo despegara el 14 de Febrero 2026, a las 20:00 horas. Te recomendamos llegar 30 minutos antes."
         />
         <InfoItem
           icon={<MapPin className="h-10 w-10 text-nature-green" />}
-          title="Ubicación"
-          description="Ceremonia: EL TEMPLO CATÓLICO DEL PUEBLO DE LA ESPERANZA. Recepción: Golf Club - La Esperanza."
+          title="Ubicación - Origen"
+          description='CEREMONIA RELIGIOSA: "El templo cátolico del pueblo de La Esperanza."'
+        />
+        <InfoItem
+          icon={<MapPin className="h-10 w-10 text-nature-green" />}
+          title="Ubicación - Destino"
+          description='RECEPCIÓN: "Golf Club - La Esperanza." 21:00 hs'
         />
         <InfoItem
           icon={<Users className="h-10 w-10 text-nature-green" />}
           title="Código de Vestimenta"
-          description="HOMBRES: Pueden optar por prendas como trajes, camisas, pantalón de vestir o remeras formales.
-          MUJERES: Pueden elegir entre vestidos, conjuntos de dos piezas, o pantalones elegantes. 
-                        El objetivo es un estilo elegante y relajado."
+          description="Elegante Sport"
         />
         <InfoItem
           icon={<Gift className="h-10 w-10 text-nature-green" />}

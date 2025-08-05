@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Plane, Utensils, Music } from "lucide-react";
+import {Plane, Music, ChefHat , Pizza,HeartPulse } from "lucide-react";
 import LocationSection from "@/components/LocationSection";
 
 export default function BoardingSection() {
@@ -45,32 +45,35 @@ export default function BoardingSection() {
               <div className="absolute left-8 top-0 bottom-0 w-0 bg-nature-sage"></div>
 
               <TimelineItem
-                time="19:00"
+                time="20:00 hs"
                 title="Despegue - Ceremonia"
-                description="Nuestra aventura comienza con una hermosa ceremonia en: El templo catolico del pueblo LA ESPERANZA."
+                description="Ceremonia Religiosa"
                 icon={<Plane className="h-6 w-6 text-white" />}
-              />
-
+              />        
               <TimelineItem
-                time="20:00"
-                title="Altitud de Crucero - Cóctel"
-                description="Disfruta de un momento de relajación con bebidas y aperitivos mientras celebramos juntos."
-                icon={<Utensils className="h-6 w-6 text-white" />}
-              />
-
+                time="21:00 hs"
+                title="Escala Gastronimica"
+                description="Recepción - Cena"
+                icon={<ChefHat className="h-6 w-6 text-white" />}
+              />                 
               <TimelineItem
-                time="21:30"
-                title="Servicio a Bordo - Cena"
-                description="Deliciosa cena preparada especialmente para compartir este momento tan especial."
-                icon={<Utensils className="h-6 w-6 text-white" />}
-              />
-
+                time="23:00 hs"
+                title="Turbulencia Romantica"
+                description="Primer baile + Brindis"
+                icon={<HeartPulse className="h-6 w-6 text-white" />}
+              />   
               <TimelineItem
-                time="22:30"
-                title="Entretenimiento - Baile"
-                description="¡A mover el cuerpo! La fiesta continúa con música y baile para todos."
+                time="02:00 hs"
+                title="Carnaval en las alturas"
+                description="Hora loca - La fiesta continúa con música y baile para todos."
                 icon={<Music className="h-6 w-6 text-white" />}
-                isLast={true}
+              />              
+              <TimelineItem
+                time="05:00 hs"
+                title="Zona libre de equipaje"
+                description="Servicio a bordo - Cierre de fiesta"
+                icon={<Pizza className="h-6 w-6 text-white" />}
+                 isLast={true}
               />
             </div>
           </div>

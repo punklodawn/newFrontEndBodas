@@ -136,7 +136,7 @@ export default function MusicPlayer() {
 
   return (
     <div 
-      className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+      className={`music-player fixed bottom-6 right-6 z-50 transition-all duration-300 ${
         isExpanded ? 'w-64' : 'w-auto'
       }`}
       onMouseEnter={() => setIsExpanded(true)}

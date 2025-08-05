@@ -21,9 +21,8 @@ export default function LocationSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <LocationCard
-            type="escala"
+            type="origen"
             title="Ceremonia Religiosa"
-            time="19:00 pm"
             place="EL TEMPLO CATÓLICO DEL PUEBLO DE LA ESPERANZA"
             address="Camino interno a Golf Club - LA ESPERANZA"
             onMapClick={() => handleOpenMap("ceremonia")}

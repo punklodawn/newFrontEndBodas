@@ -27,20 +27,20 @@ interface RSVPData {
   const PopUpTicket: React.FC<PopUpTicketProps> = ({ onClose }) => {
   const [rsvpData, setRsvpData] = useState<RSVPData | null>(null)
   const [seatNumber, setSeatNumber] = useState<string>("")
+  const [attendeesCount, setAttendeesCount] = useState({ adults: 0, children: 0 })
 
-const countAttendees = () => {
-    if (!rsvpData) return { adults: 0, children: 0 }
+const countAttendees = (data: RSVPData) => {
 
     let adults = 0
     let children = 0
 
     // Contar el invitado principal si asiste
-    if (rsvpData.isMainGuestAttending) {
+    if (data.mainGuest.is_attending) {
       adults++
     }
 
     // Contar acompañantes
-    rsvpData.attendingCompanions.forEach(companion => {
+    data.attendingCompanions.forEach(companion => {
       if (companion.is_adult) {
         adults++
       } else {
@@ -85,13 +85,14 @@ const countAttendees = () => {
     const savedData = localStorage.getItem("rsvpConfirmation")
     if (savedData) {
       try {
-        const parsedData = JSON.parse(savedData)
+        const parsedData = JSON.parse(savedData) as RSVPData
         setRsvpData(parsedData)
 
-        // Generar número de asiento
-        const { adults, children } = countAttendees()
+        const counts = countAttendees(parsedData)
+        setAttendeesCount(counts)
+
         const randomSuffix = Math.floor(Math.random() * 100).toString().padStart(2, "0")
-        setSeatNumber(`VIP-${adults + children}${randomSuffix}`)
+        setSeatNumber(`VIP-${counts.adults + counts.children }${randomSuffix}`)
       } catch (error) {
         console.error("Error al parsear datos:", error)
       }
@@ -110,9 +111,7 @@ const countAttendees = () => {
       </div>
     )
   }
-
-    const { adults, children } = countAttendees()
-  const totalAttendees = adults + children
+  const totalAttendees = attendeesCount.adults + attendeesCount.children
 
     return (
     <motion.div
@@ -193,7 +192,7 @@ const countAttendees = () => {
             </div>
             <div>
               <p className="text-xs text-nature-green">PUERTA</p>
-              <p className="font-medium">AMOR</p>
+              <p className="font-medium">LOVE</p>
             </div>
           </div>
         </div>
@@ -206,14 +205,14 @@ const countAttendees = () => {
                 <User className="h-4 w-4" />
                 <span className="text-xs">ADULTOS</span>
               </div>
-              <p className="text-2xl font-bold mt-1">{adults}</p>
+              <p className="text-2xl font-bold mt-1">{attendeesCount.adults}</p>
             </div>
             <div className="bg-nature-cream/50 p-3 rounded-lg">
               <div className="flex items-center gap-2 text-nature-green">
                 <Baby className="h-4 w-4" />
                 <span className="text-xs">NIÑOS</span>
               </div>
-              <p className="text-2xl font-bold mt-1">{children}</p>
+              <p className="text-2xl font-bold mt-1">{attendeesCount.children}</p>
             </div>
           </div>
 

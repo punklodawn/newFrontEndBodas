@@ -44,8 +44,8 @@ export default function BackgroundSlider() {
           isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
         }`}
       >
-        <h3 className="text-2xl mb-4 animate-fade-in">¡Nos casamos!</h3>
-        <h1 className="text-6xl font-serif mb-6 animate-fade-in delay-200">Lilian & Miguel</h1>
+        <h3 className="text-2xl mb-4 animate-fade-in">¡NOS CASAMOS!</h3>
+        <h1 className="text-7xl font-serif mb-6 animate-fade-in delay-200">Lilian & Miguel</h1>
         <p className="text-xl animate-fade-in delay-400">14 de Febrero, 2026</p>
       </div>
     </div>

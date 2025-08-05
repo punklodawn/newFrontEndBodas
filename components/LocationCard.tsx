@@ -6,15 +6,14 @@ import { Button } from "@/components/ui/button"
 import { TbMapPinHeart } from "react-icons/tb";
 
 interface LocationCardProps {
-  type: "escala" | "destino"
+  type: "origen" | "destino"
   title: string
-  time: string
   place: string
   address: string
   onMapClick?: () => void
 }
 
-const LocationCard: React.FC<LocationCardProps> = ({ type, title, time, place, address, onMapClick }) => {
+const LocationCard: React.FC<LocationCardProps> = ({ type, title, place, address, onMapClick }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -39,12 +38,11 @@ const LocationCard: React.FC<LocationCardProps> = ({ type, title, time, place, a
 
         {/* Título estilizado */}
         <h2 className="text-5xl font-serif text-nature-green mb-6">
-          {type === "escala" ? "Escala" : "Destino"}
+          {type === "origen" ? "Origen" : "Destino"}
         </h2>
 
         {/* Información */}
         <div className="space-y-2 mb-8">
-          <p className="text-xl text-nature-green">Hora: {time}</p>
           <p className="text-2xl font-medium text-nature-green">{title}</p>
           <p className="text-xl text-nature-green">"{place}"</p>
           <p className="text-lg text-nature-green/80">{address}</p>

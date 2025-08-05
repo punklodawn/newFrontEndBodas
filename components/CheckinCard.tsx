@@ -39,7 +39,7 @@ const CheckinCard = () => {
              {!alreadyConfirmed && (`CHECK-IN ABIERTO`)} 
             </div>
             {/* <h1 className="text-4xl md:text-6xl font-bold mb-4 nature-gradient">Lilian & Miguel</h1> */}
-            <p className="text-xl text-nature-green">Te invitan a embarcar en su viaje hacia el matrimonio</p>
+            <p className="text-xl text-nature-green">Estás cordialmente invitado a nuestra boda. Hemos pensado en vos con mucho cariño y queremos que nos acompañes en este viaje tan especial hacia el matrimonio</p>
           </motion.div>
 
           <motion.div
@@ -105,7 +105,7 @@ const CheckinCard = () => {
                   <p className="text-sm text-nature-green mb-1">RECEPCIÓN</p>
                   <div className="flex items-center">
                     <Utensils className="h-5 w-5 text-nature-green mr-2" />
-                    <p className="text-sm font-bold">Golf Club - La Esperanza</p>
+                    <p className="text-sm font-bold">GOLF CLUB - LA ESPERANZA</p>
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@ const CheckinCard = () => {
               <div className="flex items-center">
                 <Heart className="h-6 w-6 text-nature-green mr-2" />
                 <p className="font-medium">
-                  {alreadyConfirmed && (`¡Ya confirmaste tu asistencia!`)}
+                  {alreadyConfirmed && (`¡Tu asistencia ya fue confirmada!`)}
                   {!alreadyConfirmed && (`¡No olvides confirmar tu asistencia!`)} 
                 </p>
               </div>

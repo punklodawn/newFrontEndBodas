@@ -24,11 +24,20 @@ export default function PhotoGallery() {
   const openLightbox = (index: number) => {
     setSelectedImage(index)
     document.body.style.overflow = 'hidden' // Deshabilita el scroll
+    const player = document.querySelector('.music-player');
+    if (player) {
+      player.classList.add('hidden');
+    }
+
   }
 
   const closeLightbox = () => {
     setSelectedImage(null)
     document.body.style.overflow = 'auto' // Habilita el scroll nuevamente
+    const player = document.querySelector('.music-player');
+    if (player) {
+      player.classList.remove('hidden');
+    }
   }
 
   const navigateImage = (direction: 'prev' | 'next') => {
@@ -55,7 +64,7 @@ export default function PhotoGallery() {
         className="bg-white backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-nature-sage"
       >
         <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
-          <h3 className="text-xl font-bold">GALERÍA DE FOTOS</h3>
+          <h3 className="text-xl font-bold">NUESTRA HISTORIA EN FOTOS</h3>
         </div>
 
         <div className="p-6">
