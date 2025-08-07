@@ -17,6 +17,7 @@ interface RSVPData {
     email?: string;
     code: string;
     is_attending: boolean;
+    dietary_restrictions?: string;
   };
   attendingCompanions: {
     name: string;
@@ -233,6 +234,17 @@ const countAttendees = (data: RSVPData) => {
             </div>
           )}
         </div>
+
+        {rsvpData.mainGuest.dietary_restrictions && (
+          <div className="mt-4 p-4 bg-nature-cream/50 rounded-lg">
+            <h4 className="text-sm font-medium text-nature-green mb-2">
+              Restricciones alimentarias del grupo:
+            </h4>
+            <p className="text-nature-green">
+              {rsvpData.mainGuest.dietary_restrictions}
+            </p>
+          </div>
+        )}
 
         {/* Pie */}
         <div className="bg-nature-sage/10 p-4 text-center">

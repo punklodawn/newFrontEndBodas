@@ -8,10 +8,36 @@ import { useRSVP } from "@/context/RSVPContext";
 const LandingSection = () => {
    const [showTicket, setShowTicket] = useState(false);
    const { alreadyConfirmed, checkConfirmationStatus} = useRSVP();
+   const [savedData, setSavedData] = useState<any>(null);
 
-     useEffect(() => {
+  // Verificar confirmación al montar y cuando cambie el estado
+   useEffect(() => {
+    // Verificar confirmación al montar
     checkConfirmationStatus();
-  }, []);
+    
+    // Obtener datos guardados
+    const savedDataString = localStorage.getItem("rsvpConfirmation");
+    if (savedDataString) {
+      try {
+        const parsedData = JSON.parse(savedDataString);
+        setSavedData(parsedData);
+      } catch (e) {
+        console.error("Error parsing saved data", e);
+      }
+    }
+
+    // Escuchar cambios en localStorage
+    const handleStorageChange = () => {
+      checkConfirmationStatus();
+      const updatedData = localStorage.getItem("rsvpConfirmation");
+      if (updatedData) {
+        setSavedData(JSON.parse(updatedData));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [checkConfirmationStatus]);
 
   const handleOpenTicket = () => {
     setShowTicket(true);

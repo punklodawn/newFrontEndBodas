@@ -8,22 +8,33 @@ const galleryImages = [
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359891/IMG-20220529-WA0000_xoxtde.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359891/IMG-20221009-WA0035_sqfqh8.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754359892/1754355344039_cikox8.jpg',
-  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742182954/WhatsApp_Image_2025-03-13_at_22.16.36_92b46dbc_scq6w1.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592566/1754412184724_r37zlk.jpg',
   'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354535970_mygrmh.jpg',
-  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354183966_t7nv4z.jpg'
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754356548/1754354183966_t7nv4z.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592567/IMG-20220704-WA0047_rfkup8.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592567/1754412006004_jgpyfz.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592567/1754440492251_1_yzngn2.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592567/1754355177370_qegwzc.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754592567/1754404648299_wkfbnz.jpg',
+  'https://res.cloudinary.com/dgqhmzdoo/image/upload/v1754594727/1754593222370_2_nvgoyd.jpg'
   // Agrega más imágenes según necesites
 ]
 
 export default function PhotoGallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [imageDescriptions] = useState([
-  "Nuestro primer viaje juntos",
+  "Nuestro primer viaje juntos, Salinas",
+  "Un viaje Largooo pero valio la pena",
   "Celebrando nuestro aniversario",
-  "Preparativos de la boda",
-  "Momento especial en la playa",
-  "Viaje en las alturas",
-  "Viaje por las cataratas"
-
+  "Una escapada con Stand-Up",
+  "Un viaje en las alturas",
+  "Momento especial en Bote",
+  "Linda, Salta la linda",
+  "Aventuras sin parar",
+  "Cueva, linda foto",
+  "Nos Aguantamos el frio",
+  "Norte argentino que bello",
+  "Viaje a las cataratas, maravilla"
 ])
 
   const openLightbox = (index: number) => {

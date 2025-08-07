@@ -4,12 +4,14 @@ interface RSVPContextType {
   alreadyConfirmed: boolean;
   setAlreadyConfirmed: (confirmed: boolean) => void;
   checkConfirmationStatus: () => boolean;
+  triggerUpdate: () => void;
 }
 
 const RSVPContext = createContext<RSVPContextType | undefined>(undefined);
 
 export const RSVPProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+    const [updateFlag, setUpdateFlag] = useState(false);
 
   // Función para verificar el estado de confirmación
   const checkConfirmationStatus = () => {
@@ -19,16 +21,21 @@ export const RSVPProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return isConfirmed;
   };
 
+  const triggerUpdate = () => {
+    setUpdateFlag(prev => !prev);
+  };
+
   // Verificar al cargar el componente
   useEffect(() => {
     checkConfirmationStatus();
-  }, []);
+  }, [updateFlag]);
 
   return (
     <RSVPContext.Provider value={{ 
       alreadyConfirmed, 
       setAlreadyConfirmed,
-      checkConfirmationStatus 
+      checkConfirmationStatus,
+      triggerUpdate
     }}>
       {children}
     </RSVPContext.Provider>

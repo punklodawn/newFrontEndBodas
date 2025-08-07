@@ -19,6 +19,7 @@ interface MainGuest {
   email?: string | null;
   code: string;
   is_attending: boolean;
+  dietary_restrictions?: string;
 }
 
 interface CompanionGuest {
@@ -42,7 +43,7 @@ const [mainGuest, setMainGuest] = useState<MainGuest | null>(null);
 const [isMainGuestAttending, setIsMainGuestAttending] = useState<boolean>(true);
 const [companions, setCompanions] = useState<CompanionGuest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { alreadyConfirmed, setAlreadyConfirmed } = useRSVP();
+  const { alreadyConfirmed, setAlreadyConfirmed, triggerUpdate } = useRSVP();
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
@@ -153,9 +154,15 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
 
       // Actualizar estado del invitado principal
       const { error: mainGuestUpdateError } = await supabase
-        .from("main_guests")
-        .update({ is_attending: isMainGuestAttending })
-        .eq("id", mainGuest.id);
+      .from("main_guests")
+      .update({ 
+        is_attending: isMainGuestAttending,
+        dietary_restrictions: (isMainGuestAttending || companions.some(c => c.is_attending)) 
+          ? mainGuest.dietary_restrictions 
+          : null
+      })
+      .eq("id", mainGuest.id);
+
 
       if (mainGuestUpdateError) throw mainGuestUpdateError;
 
@@ -181,18 +188,20 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
       }
 
       // Guardar confirmación en localStorage
-      const attendingCompanions = companions.filter(c => c.is_attending);
-      const dataToSave: SavedConfirmationData = {
-        mainGuest: { ...mainGuest, is_attending: isMainGuestAttending },
-        attendingCompanions: attendingCompanions,
-        isMainGuestAttending: isMainGuestAttending
-      };
-      
+    const attendingCompanions = companions.filter(c => c.is_attending);
+    const dataToSave: SavedConfirmationData = {
+      mainGuest: { ...mainGuest, is_attending: isMainGuestAttending },
+      attendingCompanions: attendingCompanions,
+      isMainGuestAttending: isMainGuestAttending
+    };
+    
+          
       localStorage.setItem('rsvpConfirmation', JSON.stringify(dataToSave));
 
       // Actualizar estado local y contexto
       setSavedData(dataToSave);
       setAlreadyConfirmed(true);
+      triggerUpdate();
       
       setNotification({
         message: "¡Gracias por confirmar tu asistencia!",
@@ -360,6 +369,31 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
                     )}
                   </div>
                 </div>
+                      {/* Única caja de comentarios para todas las restricciones */}
+                {(isMainGuestAttending || companions.some(c => c.is_attending)) && (
+                  <div className="space-y-2 pt-4">
+                    <Label htmlFor="dietary-restrictions">
+                      Restricciones alimentarias de tu grupo (opcional)
+                    </Label>
+                    <textarea
+                      id="dietary-restrictions"
+                      placeholder="Ej: Mariana es vegana, Juan tiene intolerancia a la lactosa, Pedro es diabético..."
+                      value={mainGuest?.dietary_restrictions || ''}
+                      onChange={(e) => {
+                        if (mainGuest) {
+                          setMainGuest({
+                            ...mainGuest,
+                            dietary_restrictions: e.target.value
+                          });
+                        }
+                      }}
+                      className="w-full border border-nature-sage rounded-lg p-3 focus:border-nature-green focus:ring-nature-green min-h-[100px]"
+                    />
+                    <p className="text-sm text-nature-sage">
+                      Por favor indica todas las restricciones alimentarias de tu grupo separadas por comas.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4">
