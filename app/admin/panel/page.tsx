@@ -1,13 +1,11 @@
-// app/admin/panel/page.tsx
 'use client'
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, useMemo } from 'react'
 import { supabase } from '@/supabase/supabase'
 import { useRouter } from 'next/navigation'
 import AdminGuard from '@/components/AdminGuard'
 
-
 interface MainGuest {
-  id?: number;  // id es opcional porque se asigna al insertar en BD
+  id?: number;
   name: string;
   email?: string | null;
   code: string;
@@ -22,7 +20,7 @@ interface CompanionGuest {
 }
 
 export default function AdminPanel() {
-    const router = useRouter()
+  const router = useRouter()
   const [mainGuest, setMainGuest] = useState<MainGuest>({
     name: '',
     email: '',
@@ -33,13 +31,15 @@ export default function AdminPanel() {
     { name: '', is_adult: true, main_guest_id: 0, id: 0, is_attending: null }
   ])
   
-  const [guestsList, setGuestsList] = useState<(MainGuest & { companions: CompanionGuest[] })[]>([])
+  const [allGuests, setAllGuests] = useState<(MainGuest & { companions: CompanionGuest[] })[]>([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
   const [expandedGuests, setExpandedGuests] = useState<Record<number, boolean>>({})
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const guestsPerPage = 10 // Puedes ajustar este número según prefieras
 
-
-    useEffect(() => {
+  useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user?.email !== 'miguelmansillarev22@gmail.com') {
@@ -79,7 +79,7 @@ export default function AdminPanel() {
         companions: allCompanionsData?.filter(comp => comp.main_guest_id === guest.id) || []
       })) || []
 
-      setGuestsList(guestsWithCompanions)
+      setAllGuests(guestsWithCompanions)
     } catch (error) {
       console.error('Error loading guests:', error)
       setMessage({ type: 'error', text: 'Error al cargar la lista de invitados' })
@@ -87,6 +87,23 @@ export default function AdminPanel() {
       setLoading(false)
     }
   }
+
+  // Filtrar invitados basado en el término de búsqueda
+  const filteredGuests = useMemo(() => {
+    return allGuests.filter(guest => 
+      guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guest.code.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [allGuests, searchTerm])
+
+  // Calcular invitados para la página actual
+  const currentGuests = useMemo(() => {
+    const startIndex = (currentPage - 1) * guestsPerPage
+    return filteredGuests.slice(startIndex, startIndex + guestsPerPage)
+  }, [filteredGuests, currentPage, guestsPerPage])
+
+  // Calcular número total de páginas
+  const totalPages = Math.ceil(filteredGuests.length / guestsPerPage)
 
   const handleMainGuestChange = (field: keyof MainGuest, value: string) => {
     setMainGuest(prev => ({
@@ -203,22 +220,22 @@ export default function AdminPanel() {
   }
 
   return (
-        <AdminGuard>
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Panel de Administración</h1>
-      
-      {/* Formulario para registrar invitados */}
-      <div className="bg-white p-6 rounded-lg shadow border border-gray-200 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Registrar Nuevo Invitado</h2>
+    <AdminGuard>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6">Panel de Administración</h1>
         
-        {message && (
-          <div className={`p-3 rounded mb-4 ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-            {message.text}
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Formulario para registrar invitados */}
+        <div className="bg-white p-6 rounded-lg shadow border border-gray-200 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Registrar Nuevo Invitado</h2>
+          
+          {message && (
+            <div className={`p-3 rounded mb-4 ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              {message.text}
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Invitado Principal</label>
               <input
@@ -315,87 +332,180 @@ export default function AdminPanel() {
         </form>
       </div>
       
-      {/* Lista de invitados registrados con sus acompañantes */}
-      <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4">Invitados Registrados</h2>
         
-        {loading ? (
-          <p>Cargando lista de invitados...</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acompañantes</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalles</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {guestsList.map((guest) => (
-                  <Fragment key={guest.id}>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{guest.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">{guest.code}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{guest.email || '-'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {guest.companions.length} acompañante(s)
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {guest.id !== undefined ? (
-                                <button
-                                    onClick={() => toggleGuestExpansion(guest.id!)} // Usamos el operador ! para afirmar que no es undefined
-                                    className="text-blue-600 hover:text-blue-900"
-                                >
-                                    {expandedGuests[guest.id] ? 'Ocultar' : 'Ver'} detalles
-                                </button>
-                                ) : (
-                                <span className="text-gray-400">No disponible</span>
-                                )}
-                      </td>
-                    </tr>
-                    {guest.id !== undefined && expandedGuests[guest.id] && (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-gray-900 mb-2">Lista de Acompañantes:</h4>
-                            {guest.companions.length > 0 ? (
-                              <ul className="list-disc list-inside space-y-1">
-                                {guest.companions.map((companion) => (
-                                  <li key={companion.id} className="text-gray-700">
-                                    {companion.name} 
-                                    <span className="text-gray-500 text-sm ml-2">
-                                      ({companion.is_adult ? 'Adulto' : 'Niño'})
-                                    </span>
-                                    {companion.is_attending !== null && (
-                                      <span className={`ml-2 text-sm ${companion.is_attending ? 'text-green-600' : 'text-red-600'}`}>
-                                        ({companion.is_attending ? 'Confirmado' : 'No asistirá'})
-                                      </span>
-                                    )}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="text-gray-500">No hay acompañantes registrados</p>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
+        {/* Lista de invitados registrados con sus acompañantes */}
+        <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+            <h2 className="text-xl font-semibold">Invitados Registrados</h2>
             
-            {guestsList.length === 0 && (
-              <p className="text-center py-4 text-gray-500">No hay invitados registrados aún</p>
+            {/* Buscador */}
+            <div className="relative w-full md:w-64">
+              <input
+                type="text"
+                placeholder="Buscar por nombre o código"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setCurrentPage(1) // Resetear a la primera página al buscar
+                }}
+                className="w-full p-2 pl-10 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          {/* Info de resultados */}
+          <div className="mb-4 text-sm text-gray-600">
+            Mostrando {currentGuests.length} de {filteredGuests.length} invitados
+            {searchTerm && (
+              <span> (filtrados de {allGuests.length} totales)</span>
             )}
           </div>
-        )}
+          
+          {loading ? (
+            <p>Cargando lista de invitados...</p>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acompañantes</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalles</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentGuests.map((guest) => (
+                      <Fragment key={guest.id}>
+                        <tr>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{guest.name}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">{guest.code}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{guest.email || '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {guest.companions.length} acompañante(s)
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {guest.id !== undefined ? (
+                              <button
+                                onClick={() => toggleGuestExpansion(guest.id!)}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                {expandedGuests[guest.id] ? 'Ocultar' : 'Ver'} detalles
+                              </button>
+                            ) : (
+                              <span className="text-gray-400">No disponible</span>
+                            )}
+                          </td>
+                        </tr>
+                        {guest.id !== undefined && expandedGuests[guest.id] && (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-4">
+                              <div className="bg-gray-50 p-4 rounded-lg">
+                                <h4 className="font-medium text-gray-900 mb-2">Lista de Acompañantes:</h4>
+                                {guest.companions.length > 0 ? (
+                                  <ul className="list-disc list-inside space-y-1">
+                                    {guest.companions.map((companion) => (
+                                      <li key={companion.id} className="text-gray-700">
+                                        {companion.name} 
+                                        <span className="text-gray-500 text-sm ml-2">
+                                          ({companion.is_adult ? 'Adulto' : 'Niño'})
+                                        </span>
+                                        {companion.is_attending !== null && (
+                                          <span className={`ml-2 text-sm ${companion.is_attending ? 'text-green-600' : 'text-red-600'}`}>
+                                            ({companion.is_attending ? 'Confirmado' : 'No asistirá'})
+                                          </span>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-gray-500">No hay acompañantes registrados</p>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {filteredGuests.length === 0 && (
+                  <p className="text-center py-4 text-gray-500">
+                    {searchTerm ? 'No se encontraron invitados con ese criterio' : 'No hay invitados registrados aún'}
+                  </p>
+                )}
+              </div>
+              
+              {/* Paginación */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <div className="text-sm text-gray-700">
+                    Página {currentPage} de {totalPages}
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className={`px-4 py-2 border rounded ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      Anterior
+                    </button>
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      // Mostrar máximo 5 páginas en la navegación
+                      let pageNum
+                      if (totalPages <= 5) {
+                        pageNum = i + 1
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i
+                      } else {
+                        pageNum = currentPage - 2 + i
+                      }
+                      
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-4 py-2 border rounded ${currentPage === pageNum ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    })}
+                    {totalPages > 5 && currentPage < totalPages - 2 && (
+                      <span className="px-2 py-2">...</span>
+                    )}
+                    {totalPages > 5 && currentPage < totalPages - 2 && (
+                      <button
+                        onClick={() => setCurrentPage(totalPages)}
+                        className="px-4 py-2 border rounded bg-white text-gray-700 hover:bg-gray-50"
+                      >
+                        {totalPages}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className={`px-4 py-2 border rounded ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </AdminGuard>
   )
 }

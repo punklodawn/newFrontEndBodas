@@ -52,7 +52,7 @@ export default function BoardingSection() {
               />        
               <TimelineItem
                 time="21:00 hs"
-                title="Escala Gastronimica"
+                title="Escala Gastronomica"
                 description="Recepción - Cena"
                 icon={<ChefHat className="h-6 w-6 text-white" />}
               />                 

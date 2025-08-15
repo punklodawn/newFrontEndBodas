@@ -20,8 +20,8 @@ export default function OurStory() {
           Hoy prometo embarcarme contigo en el viaje más hermoso de todos: la vida juntos.
           No importa cuántas escalas, desvíos o turbulencias encontremos, siempre serás mi destino favorito.
           Te elijo como mi compañero/a de ruta, mi brújula cuando me pierda y mi hogar en cualquier parte del mundo.
-          Prometo sostener tu mano en cada aterrizaje y mirar con vos el horizonte en cada despegue.
-          Con vos, todos los caminos conducen al amor.
+          Prometo sostener tu mano en cada aterrizaje y mirar juntos el horizonte en cada despegue.
+          Contigo, todos los caminos conducen al amor.
         </p>
 
 
