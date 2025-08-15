@@ -16,14 +16,15 @@ export const metadata = {
   description: "Te invitamos a nuestra boda el 14 de Febrero, 2026",
    icons: {
     icon: '/corazon.png',
-  },
-   viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
   }
 }
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 
 export default function RootLayout({
   children,
