@@ -34,6 +34,36 @@
 
     --radius: 0.5rem;
   }
+  .dark {
+    /* Dark theme - versión oscura de tu paleta */
+    --background: 120 10% 10%; /* Fondo verde muy oscuro */
+    --foreground: 120 15% 90%; /* Texto verde claro */
+
+    --card: 120 15% 15%; /* Tarjetas verde oscuro */
+    --card-foreground: 120 15% 90%;
+
+    --popover: 120 15% 15%;
+    --popover-foreground: 120 15% 90%;
+
+    --primary: 120 15% 40%; /* Mantenemos el verde principal */
+    --primary-foreground: 120 15% 90%; /* Texto claro sobre verde */
+
+    --secondary: 120 15% 20%; /* Verde oscuro */
+    --secondary-foreground: 120 15% 90%;
+
+    --muted: 120 15% 20%;
+    --muted-foreground: 120 15% 70%;
+
+    --accent: 120 15% 25%;
+    --accent-foreground: 120 15% 90%;
+
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 120 15% 25%;
+    --input: 120 15% 25%;
+    --ring: 120 15% 60%;
+  }
 }
 
 @layer base {
@@ -42,6 +72,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
@@ -58,6 +89,107 @@
   background: linear-gradient(to right, #414040, #414040, #414040, #414040);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+
+.dark .bg-nature-white {
+  background-color: #1a1a18;
+}
+
+.dark .bg-nature-cream {
+  background-color: #2a2b24;
+}
+
+.dark .bg-nature-sage {
+  background-color: #4a5a40;
+}
+
+.dark .bg-nature-green {
+  background-color: #5d7a5f;
+}
+
+.dark .text-nature-white {
+  color: #f2f2f0;
+}
+
+.dark .text-nature-cream {
+  color: #e5e6d8;
+}
+
+.dark .text-nature-sage {
+  color: #c5d1b8;
+}
+
+.dark .text-nature-green {
+  color: #9dbb9f;
+}
+
+.dark .text-nature-black {
+  color: #c5d1b8;
+}
+
+.dark .border-nature-white {
+  border-color: #3a3a38;
+}
+
+.dark .border-nature-cream {
+  border-color: #4a4b44;
+}
+
+.dark .border-nature-sage {
+  border-color: #6a7a60;
+}
+
+.dark .border-nature-green {
+  border-color: #7d9d7f;
+}
+
+/* Gradientes para dark mode */
+.dark .from-nature-white {
+  --tw-gradient-from: #2a2b24 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(58, 72, 65, 0.596) var(--tw-gradient-to-position);
+}
+
+.dark .from-nature-cream {
+  --tw-gradient-from: #3a3a38 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(58, 63, 61, 0.664) var(--tw-gradient-to-position);
+}
+
+.dark .from-nature-sage {
+  --tw-gradient-from: #4a5a40 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(58, 80, 72, 0.61) var(--tw-gradient-to-position);
+}
+
+.dark .from-nature-green {
+  --tw-gradient-from: #5d7a5f var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(88, 118, 111, 0.61) var(--tw-gradient-to-position);
+}
+
+.dark .to-nature-cream {
+  --tw-gradient-to: #4a4b44 var(--tw-gradient-to-position);
+}
+
+.dark .to-nature-sage {
+  --tw-gradient-to: #6a7a60 var(--tw-gradient-to-position);
+}
+
+.dark .to-nature-green {
+  --tw-gradient-to: #7d9d7f var(--tw-gradient-to-position);
+}
+
+/* Music player */
+.music-player {
+  transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+.dark .music-player {
+  background-color: #2a2b24 !important;
+}
+
+.music-player.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
 }
 
 /* Colores personalizados de la paleta */

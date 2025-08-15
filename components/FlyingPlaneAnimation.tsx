@@ -6,9 +6,11 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
+import { useTheme } from "next-themes";
 
 export default function FlyingPlaneAnimation() {
 
+  const { theme } = useTheme();
   const mainRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: mainRef,
@@ -46,6 +48,22 @@ export default function FlyingPlaneAnimation() {
     ["-200%", "0%"]
   );
 
+  useEffect(() => {
+  // Solución para el scroll en móvil
+  const handleTouchMove = (e: TouchEvent) => {
+    // Permite el scroll normal
+  };
+
+  window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+  return () => {
+    window.removeEventListener('touchmove', handleTouchMove);
+  };
+}, []);
+
+  const lightBgImage = "https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg";
+  const darkBgImage = "https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg";
+
 return (
 <>
 {/* Flying Plane Animation */}
@@ -64,10 +82,8 @@ return (
 
       <motion.div
         className="fixed inset-1 z-1 pointer-events-none"
-        // transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
         style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg')",
+        backgroundImage: `url('${theme === 'dark' ? darkBgImage : lightBgImage}')`,
           backgroundSize: "cover",
           backgroundPosition: "top",
           opacity: cloudOpacity1,
@@ -76,10 +92,8 @@ return (
       />
       <motion.div
         className="fixed inset-1 z-2 pointer-events-none"
-        // transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
         style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg')",
+          backgroundImage: `url('${theme === 'dark' ? darkBgImage : lightBgImage}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           opacity: cloudOpacity2,
@@ -88,10 +102,8 @@ return (
       />
       <motion.div
         className="fixed inset-1 z-3 pointer-events-none"
-        // transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
         style={{
-          backgroundImage:
-            "url('https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg')",
+          backgroundImage: `url('${theme === 'dark' ? darkBgImage : lightBgImage}')`,
           backgroundSize: "cover",
           backgroundPosition: "bottom",
           opacity: cloudOpacity3,
