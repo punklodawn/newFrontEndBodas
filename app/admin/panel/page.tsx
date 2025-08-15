@@ -21,6 +21,15 @@ interface CompanionGuest {
   is_attending: boolean | null;
 }
 
+interface GuestStats {
+  totalGuests: number;
+  totalAttending: number;
+  totalNotAttending: number;
+  totalPending: number;
+  totalAdults: number;
+  totalChildren: number;
+}
+
 export default function AdminPanel() {
   const router = useRouter();
   const [mainGuest, setMainGuest] = useState<MainGuest>({
@@ -47,6 +56,9 @@ export default function AdminPanel() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const guestsPerPage = 10; // Puedes ajustar este número según prefieras
+
+  const player = document.querySelector('.music-player')
+    if (player) player.classList.add('hidden')
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -251,6 +263,39 @@ export default function AdminPanel() {
     }));
   };
 
+
+  const calculateStats = useMemo(() => {
+  const stats: GuestStats = {
+    totalGuests: 0,
+    totalAttending: 0,
+    totalNotAttending: 0,
+    totalPending: 0,
+    totalAdults: 0,
+    totalChildren: 0
+  };
+
+  allGuests.forEach(guest => {
+    // Contar invitado principal
+    stats.totalGuests += 1;
+    if (guest.is_attending === true) stats.totalAttending += 1;
+    if (guest.is_attending === false) stats.totalNotAttending += 1;
+    if (guest.is_attending === null) stats.totalPending += 1;
+
+    // Contar acompañantes
+    guest.companions.forEach(companion => {
+      stats.totalGuests += 1;
+      if (companion.is_attending === true) stats.totalAttending += 1;
+      if (companion.is_attending === false) stats.totalNotAttending += 1;
+      if (companion.is_attending === null) stats.totalPending += 1;
+      
+      if (companion.is_adult) stats.totalAdults += 1;
+      else stats.totalChildren += 1;
+    });
+  });
+
+  return stats;
+}, [allGuests]);
+
   return (
     <AdminGuard>
       <div className="p-6">
@@ -424,6 +469,38 @@ export default function AdminPanel() {
                   />
                 </svg>
               </div>
+            </div>
+          </div>
+
+                    {/* Estadísticas */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
+              <h3 className="text-sm font-medium text-gray-500">Total Invitados</h3>
+              <p className="text-2xl font-semibold">{calculateStats.totalGuests}</p>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg shadow border border-green-200">
+              <h3 className="text-sm font-medium text-green-600">Confirmados</h3>
+              <p className="text-2xl font-semibold text-green-700">{calculateStats.totalAttending}</p>
+            </div>
+            <div className="bg-yellow-50 p-4 rounded-lg shadow border border-yellow-200">
+              <h3 className="text-sm font-medium text-yellow-600">Por confirmar</h3>
+              <p className="text-2xl font-semibold text-yellow-700">{calculateStats.totalPending}</p>
+            </div>
+            <div className="bg-red-50 p-4 rounded-lg shadow border border-red-200">
+              <h3 className="text-sm font-medium text-red-600">No asistirán</h3>
+              <p className="text-2xl font-semibold text-red-700">{calculateStats.totalNotAttending}</p>
+            </div>
+          </div>
+
+          {/* Desglose adultos/niños (opcional) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-blue-50 p-4 rounded-lg shadow border border-blue-200">
+              <h3 className="text-sm font-medium text-blue-600">Total Adultos</h3>
+              <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalAdults}</p>
+            </div>
+            <div className="bg-purple-50 p-4 rounded-lg shadow border border-purple-200">
+              <h3 className="text-sm font-medium text-purple-600">Total Niños</h3>
+              <p className="text-2xl font-semibold text-purple-700">{calculateStats.totalChildren}</p>
             </div>
           </div>
 
