@@ -57,8 +57,14 @@ export default function AdminPanel() {
   const [currentPage, setCurrentPage] = useState(1);
   const guestsPerPage = 10; // Puedes ajustar este número según prefieras
 
+useEffect(() => {
   const player = document.querySelector('.music-player')
-    if (player) player.classList.add('hidden')
+  if (player) player.classList.add('hidden')
+  
+  return () => {
+    if (player) player.classList.remove('hidden')
+  }
+}, [])
 
   useEffect(() => {
     const checkAuth = async () => {

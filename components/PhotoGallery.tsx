@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 
 const galleryImages = [
@@ -48,16 +48,9 @@ export default function PhotoGallery() {
     const globalIndex = currentSlide * 4 + index
     setSelectedImage(globalIndex)
     document.body.style.overflow = 'hidden'
+    const player = document.querySelector('.music-player')
+if (player) player.classList.add('hidden')
   }
-
-  useEffect(() => {
-  const player = document.querySelector('.music-player')
-  if (player) player.classList.add('hidden')
-  
-  return () => {
-    if (player) player.classList.remove('hidden')
-  }
-}, [])
 
   const closeLightbox = () => {
     setSelectedImage(null)
