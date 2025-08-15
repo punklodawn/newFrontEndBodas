@@ -11,8 +11,11 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: "Lilian & Miguel - Invitación de Boda",
+  title: "Lilian & Miguel - Invitación de Boda ❤️",
   description: "Te invitamos a nuestra boda el 14 de Febrero, 2026",
+   icons: {
+    icon: '/corazon.png',
+  }
 }
 
 export default function RootLayout({
