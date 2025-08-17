@@ -22,7 +22,7 @@ const BaggageSection = () => {
             Recogida de Equipaje
           </h2>
           <p className="text-lg text-nature-green max-w-2xl mx-auto">
-            Si deseas hacernos un regalo, aquí encontrarás algunas opciones
+            Si deseas hacernos un regalo, aquí encontrarás la opcion
           </p>
         </motion.div>
 
@@ -36,32 +36,32 @@ const BaggageSection = () => {
           <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
             <div className="flex items-center">
               <Gift className="h-6 w-6 mr-3" />
-              <h3 className="text-xl font-bold">LISTA DE REGALOS</h3>
+              <h3 className="text-xl font-bold">REGALO</h3>
             </div>
           </div>
 
           <div className="p-6">
             <p className="text-nature-green mb-8 text-center">
               Tu presencia es nuestro mejor regalo, pero si deseas
-              obsequiarnos algo, aquí hay algunas opciones:
+              obsequiarnos algo:
             </p>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-1 gap-6">
               <GiftItem
                 icon={<Luggage className="h-10 w-10 text-nature-green" />}
                 title="Luna de Miel"
                 description="Ayúdanos a crear recuerdos inolvidables en nuestro viaje de bodas."
               />
-              <GiftItem
+              {/* <GiftItem
                 icon={<Gift className="h-10 w-10 text-nature-green" />}
                 title="Regalo Libre"
                 description="Sorpréndenos con algo que creas que nos encantará."
-              />
+              /> */}
             </div>
 
             <div className="mt-8 p-4 bg-nature-cream rounded-lg border border-nature-sage">
               <p className="text-center text-nature-green">
-                <strong>Datos bancarios:</strong> ES12 3456 7890 1234 5678 9012
+                <strong>CBU/ALIAS:</strong> BODA.LILIAN.MIGUEL
               </p>
             </div>
           </div>

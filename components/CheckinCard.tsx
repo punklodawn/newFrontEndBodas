@@ -98,7 +98,7 @@ const CheckinCard = () => {
                   <p className="text-sm text-nature-green mb-1">CEREMONIA</p>
                   <div className="flex items-center">
                     <MapPin className="h-5 w-5 text-nature-green mr-2" />
-                    <p className="text-sm font-bold">EL TEMPLO CATÓLICO DEL PUEBLO DE LA ESPERANZA</p>
+                    <p className="text-sm font-bold">EL TEMPLO CATÓLICO DE LA ESPERANZA</p>
                   </div>
                 </div>
                 <div>

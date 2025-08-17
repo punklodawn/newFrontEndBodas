@@ -126,7 +126,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
         <InfoItem
           icon={<MapPin className="h-10 w-10 text-nature-green" />}
           title="Ubicación - Origen"
-          description='CEREMONIA RELIGIOSA: "El templo cátolico del pueblo de La Esperanza."'
+          description='CEREMONIA RELIGIOSA: "El templo cátolico de La Esperanza."'
         />
         <InfoItem
           icon={<MapPin className="h-10 w-10 text-nature-green" />}

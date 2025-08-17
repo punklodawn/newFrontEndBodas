@@ -23,7 +23,7 @@ export default function LocationSection() {
           <LocationCard
             type="origen"
             title="Ceremonia Religiosa"
-            place="EL TEMPLO CATÓLICO DEL PUEBLO DE LA ESPERANZA"
+            place="EL TEMPLO CATÓLICO DE LA ESPERANZA"
             address="Camino interno a Golf Club - LA ESPERANZA"
             onMapClick={() => handleOpenMap("ceremonia")}
           />
