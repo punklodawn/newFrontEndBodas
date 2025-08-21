@@ -271,11 +271,15 @@ const openLightbox = (index: number) => {
   const globalIndex = (currentPage - 1) * photosPerPage + index;
   setSelectedImage(globalIndex)
   document.body.style.overflow = 'hidden'
+   const player = document.querySelector('.music-player')
+if (player) player.classList.add('hidden')
 }
 
   const closeLightbox = () => {
     setSelectedImage(null)
     document.body.style.overflow = 'auto'
+    const player = document.querySelector('.music-player')
+    if (player) player.classList.remove('hidden')
   }
 
   const navigateImage = (direction: 'prev' | 'next') => {
