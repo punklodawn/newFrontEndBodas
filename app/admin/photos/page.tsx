@@ -16,38 +16,51 @@ interface Photo {
 }
 
 export default function PhotoModerationPage() {
-  const [photos, setPhotos] = useState<Photo[]>([])
+  const [allPhotos, setAllPhotos] = useState<Photo[]>([]) // Todas las fotos
+  const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>([]) // Fotos filtradas
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending')
   const [previewImage, setPreviewImage] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchPhotos()
-  }, [filter])
+    fetchAllPhotos()
+  }, [])
 
-  const fetchPhotos = async () => {
+  // Obtener todas las fotos una sola vez
+  const fetchAllPhotos = async () => {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('wedding_photos')
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (filter !== 'all') {
-        query = query.eq('status', filter)
-      }
-
-      const { data, error } = await query
-
       if (error) {
         console.error('Error fetching photos:', error)
       } else {
-        setPhotos(data || [])
+        setAllPhotos(data || [])
+        // Aplicar filtro inicial
+        applyFilter('pending', data || [])
       }
     } catch (error) {
       console.error('Error:', error)
     } finally {
       setLoading(false)
     }
+  }
+
+  // Aplicar filtro localmente
+  const applyFilter = (filterType: typeof filter, photos: Photo[]) => {
+    if (filterType === 'all') {
+      setFilteredPhotos(photos)
+    } else {
+      setFilteredPhotos(photos.filter(photo => photo.status === filterType))
+    }
+  }
+
+  // Cuando cambia el filtro, aplicarlo localmente
+  const handleFilterChange = (newFilter: typeof filter) => {
+    setFilter(newFilter)
+    applyFilter(newFilter, allPhotos)
   }
 
   const moderatePhoto = async (id: string, status: 'approved' | 'rejected') => {
@@ -57,24 +70,31 @@ export default function PhotoModerationPage() {
         .update({ 
           status,
           moderated_at: new Date().toISOString(),
-          moderated_by: 'admin' // En una implementación real, usarías el usuario autenticado
+          moderated_by: 'admin'
         })
         .eq('id', id)
 
       if (error) {
         console.error('Error moderating photo:', error)
       } else {
-        // Actualizar la lista localmente
-        setPhotos(prev => prev.filter(photo => photo.id !== id))
+        // Actualizar ambas listas localmente
+        setAllPhotos(prev => prev.map(photo => 
+          photo.id === id 
+            ? {...photo, status, moderated_at: new Date().toISOString(), moderated_by: 'admin'}
+            : photo
+        ))
+        
+        setFilteredPhotos(prev => prev.filter(photo => photo.id !== id))
       }
     } catch (error) {
       console.error('Error:', error)
     }
   }
 
-  const filteredPhotos = filter === 'all' 
-    ? photos 
-    : photos.filter(photo => photo.status === filter)
+  // Contadores para cada estado
+  const pendingCount = allPhotos.filter(p => p.status === 'pending').length
+  const approvedCount = allPhotos.filter(p => p.status === 'approved').length
+  const rejectedCount = allPhotos.filter(p => p.status === 'rejected').length
 
   return (
     <div className="min-h-screen bg-nature-cream py-12 px-4">
@@ -99,44 +119,44 @@ export default function PhotoModerationPage() {
           
           <div className="p-4 flex flex-wrap gap-2">
             <button
-              onClick={() => setFilter('all')}
+              onClick={() => handleFilterChange('all')}
               className={`px-4 py-2 rounded-full ${
                 filter === 'all' 
                   ? 'bg-nature-green text-white' 
                   : 'bg-gray-100 text-nature-green'
               }`}
             >
-              Todas ({photos.length})
+              Todas ({allPhotos.length})
             </button>
             <button
-              onClick={() => setFilter('pending')}
+              onClick={() => handleFilterChange('pending')}
               className={`px-4 py-2 rounded-full ${
                 filter === 'pending' 
                   ? 'bg-yellow-500 text-white' 
                   : 'bg-gray-100 text-nature-green'
               }`}
             >
-              Pendientes ({photos.filter(p => p.status === 'pending').length})
+              Pendientes ({pendingCount})
             </button>
             <button
-              onClick={() => setFilter('approved')}
+              onClick={() => handleFilterChange('approved')}
               className={`px-4 py-2 rounded-full ${
                 filter === 'approved' 
                   ? 'bg-green-500 text-white' 
                   : 'bg-gray-100 text-nature-green'
               }`}
             >
-              Aprobadas ({photos.filter(p => p.status === 'approved').length})
+              Aprobadas ({approvedCount})
             </button>
             <button
-              onClick={() => setFilter('rejected')}
+              onClick={() => handleFilterChange('rejected')}
               className={`px-4 py-2 rounded-full ${
                 filter === 'rejected' 
                   ? 'bg-red-500 text-white' 
                   : 'bg-gray-100 text-nature-green'
               }`}
             >
-              Rechazadas ({photos.filter(p => p.status === 'rejected').length})
+              Rechazadas ({rejectedCount})
             </button>
           </div>
         </div>
