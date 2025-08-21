@@ -5,6 +5,88 @@ import { Upload, X, Loader2, CheckCircle, ChevronLeft, ChevronRight, Heart } fro
 import Image from 'next/image'
 import { supabase } from '@/supabase/supabase'
 
+
+
+// Función para comprimir imágenes antes de subir
+const compressImage = async (file: File, maxSizeMB = 1): Promise<File> => {
+  return new Promise((resolve) => {
+    // Si el archivo ya es menor al tamaño máximo, no comprimir
+    if (file.size <= maxSizeMB * 1024 * 1024) {
+      resolve(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = (event) => {
+      const img = document.createElement('img');
+      img.src = event.target?.result as string;
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+          if (!ctx) {
+          resolve(file);
+          return;
+        }
+        
+        // Calcular nuevas dimensiones manteniendo aspect ratio
+        let width = img.width;
+        let height = img.height;
+        const maxDimension = 1200; // Máximo ancho/alto
+        
+        if (width > height) {
+          if (width > maxDimension) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          }
+        } else {
+          if (height > maxDimension) {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Dibujar imagen redimensionada
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Convertir a blob con compresión
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              // Crear nuevo archivo comprimido
+              resolve(new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              }));
+            } else {
+              // Fallback: devolver archivo original si hay error
+              resolve(file);
+            }
+          },
+          'image/jpeg',
+          0.7 // Calidad (0.7 = 70%)
+        );
+      };
+      
+      img.onerror = () => {
+        // Si hay error al cargar la imagen, devolver original
+        resolve(file);
+      };
+    };
+    
+    reader.onerror = () => {
+      // Si hay error al leer el archivo, devolver original
+      resolve(file);
+    };
+  });
+};
+
 interface GalleryImage {
   id: string
   created_at: string
@@ -23,6 +105,8 @@ export default function UploadPage() {
   const [loadingPhotos, setLoadingPhotos] = useState(true)
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [photosPerPage, setPhotosPerPage] = useState(12)
 
   // Cargar fotos aprobadas
   useEffect(() => {
@@ -49,6 +133,28 @@ export default function UploadPage() {
     fetchApprovedPhotos()
   }, [])
 
+  const indexOfLastPhoto = currentPage * photosPerPage
+  const indexOfFirstPhoto = indexOfLastPhoto - photosPerPage
+  const currentPhotos = approvedPhotos.slice(indexOfFirstPhoto, indexOfLastPhoto)
+  const totalPages = Math.ceil(approvedPhotos.length / photosPerPage)
+
+// Funciones de navegación
+    const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+    }
+
+    const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1)
+    }
+
+    const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
+    }
+
+
+
+
+
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files || files.length === 0) return
@@ -60,52 +166,61 @@ export default function UploadPage() {
     setUploadedFiles(prev => prev.filter((_, i) => i !== index))
   }
 
-  const handleUpload = async () => {
-    if (uploadedFiles.length === 0) {
-      setMessage({ text: 'Por favor selecciona al menos una foto', type: 'error' })
-      return
-    }
+const handleUpload = async () => {
+  if (uploadedFiles.length === 0) {
+    setMessage({ text: 'Por favor selecciona al menos una foto', type: 'error' })
+    return
+  }
 
-    if (!guestName.trim()) {
-      setMessage({ text: 'Por favor ingresa tu nombre', type: 'error' })
-      return
-    }
+  if (!guestName.trim()) {
+    setMessage({ text: 'Por favor ingresa tu nombre', type: 'error' })
+    return
+  }
 
-    try {
-      setMessage(null)
-      setUploading(true)
-      setProgress(0)
+  try {
+    setMessage(null)
+    setUploading(true)
+    setProgress(0)
 
-      let successfulUploads = 0
+    let successfulUploads = 0
 
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        const file = uploadedFiles[i]
-        
-        // Validaciones
-        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
-          setMessage({ text: `El archivo ${file.name} no es JPG o PNG`, type: 'error' })
-          continue
-        }
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const file = uploadedFiles[i]
+      
+      // Validaciones
+      if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+        setMessage({ text: `El archivo ${file.name} no es JPG o PNG`, type: 'error' })
+        continue
+      }
 
-        if (file.size > 5 * 1024 * 1024) {
-          setMessage({ text: `El archivo ${file.name} excede 5MB`, type: 'error' })
-          continue
-        }
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage({ text: `El archivo ${file.name} excede 5MB`, type: 'error' })
+        continue
+      }
 
-        // Subir archivo a Supabase Storage
-        const fileExt = file.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = fileName
+      // --- COMPRIMIR IMAGEN ANTES DE SUBIR ---
+      let fileToUpload = file;
+      try {
+        fileToUpload = await compressImage(file, 1); // Comprimir a máximo 1MB
+      } catch (compressionError) {
+        console.warn('Error comprimiendo imagen, subiendo original:', compressionError);
+        // Continuar con el archivo original si hay error en compresión
+      }
 
-        const { error: uploadError } = await supabase.storage
-          .from('wedding-photos')
-          .upload(filePath, file)
+      // Subir archivo a Supabase Storage
+      const fileExt = fileToUpload.name.split('.').pop()
+      const fileName = `${Math.random()}.${fileExt}`
+      const filePath = fileName
 
-        if (uploadError) {
-          console.error('Error uploading file:', uploadError)
-          setMessage({ text: `Error al subir ${file.name}: ${uploadError.message}`, type: 'error' })
-          continue
-        }
+      const { error: uploadError } = await supabase.storage
+        .from('wedding-photos')
+        .upload(filePath, fileToUpload)
+
+      if (uploadError) {
+        console.error('Error uploading file:', uploadError)
+        setMessage({ text: `Error al subir ${file.name}: ${uploadError.message}`, type: 'error' })
+        continue
+      }
 
         // Obtener URL pública
         const { data: urlData } = supabase
@@ -152,10 +267,11 @@ export default function UploadPage() {
     }
   }
 
-  const openLightbox = (index: number) => {
-    setSelectedImage(index)
-    document.body.style.overflow = 'hidden'
-  }
+const openLightbox = (index: number) => {
+  const globalIndex = (currentPage - 1) * photosPerPage + index;
+  setSelectedImage(globalIndex)
+  document.body.style.overflow = 'hidden'
+}
 
   const closeLightbox = () => {
     setSelectedImage(null)
@@ -397,8 +513,9 @@ export default function UploadPage() {
                 <p className="text-nature-green">Aún no hay fotos aprobadas. ¡Sé el primero en compartir!</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {approvedPhotos.map((photo, index) => (
+                   <>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  mb-6">
+                {currentPhotos.map((photo, index) => (
                   <motion.div
                     key={photo.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -422,6 +539,38 @@ export default function UploadPage() {
                   </motion.div>
                 ))}
               </div>
+                      {approvedPhotos.length > photosPerPage && (
+          <div className="flex justify-center items-center space-x-4 mt-4">
+            <button
+              onClick={prevPage}
+              disabled={currentPage === 1}
+              className={`p-2 rounded-full ${
+                currentPage === 1 
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                  : 'bg-nature-green text-white hover:bg-nature-sage'
+              }`}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <span className="text-nature-green text-sm">
+              Página {currentPage} de {totalPages}
+            </span>
+
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className={`p-2 rounded-full ${
+                currentPage === totalPages
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                  : 'bg-nature-green text-white hover:bg-nature-sage'
+              }`}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
+      </>
             )}
           </div>
         </motion.div>

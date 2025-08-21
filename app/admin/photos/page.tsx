@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Check, X, Eye, Loader2 } from 'lucide-react'
+import { Check, X, Eye, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { supabase } from '@/supabase/supabase'
 
@@ -16,17 +16,27 @@ interface Photo {
 }
 
 export default function PhotoModerationPage() {
-  const [allPhotos, setAllPhotos] = useState<Photo[]>([]) // Todas las fotos
-  const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>([]) // Fotos filtradas
+  const [allPhotos, setAllPhotos] = useState<Photo[]>([])
+  const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending')
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+  
+  // Estados para paginación
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(12) // 12, 24, 48
 
   useEffect(() => {
     fetchAllPhotos()
   }, [])
 
-  // Obtener todas las fotos una sola vez
+  // Calcular páginas y elementos mostrados
+  const totalItems = filteredPhotos.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentPhotos = filteredPhotos.slice(startIndex, endIndex)
+
   const fetchAllPhotos = async () => {
     try {
       const { data, error } = await supabase
@@ -38,7 +48,6 @@ export default function PhotoModerationPage() {
         console.error('Error fetching photos:', error)
       } else {
         setAllPhotos(data || [])
-        // Aplicar filtro inicial
         applyFilter('pending', data || [])
       }
     } catch (error) {
@@ -48,8 +57,8 @@ export default function PhotoModerationPage() {
     }
   }
 
-  // Aplicar filtro localmente
   const applyFilter = (filterType: typeof filter, photos: Photo[]) => {
+    setCurrentPage(1) // Resetear a primera página al cambiar filtro
     if (filterType === 'all') {
       setFilteredPhotos(photos)
     } else {
@@ -57,7 +66,6 @@ export default function PhotoModerationPage() {
     }
   }
 
-  // Cuando cambia el filtro, aplicarlo localmente
   const handleFilterChange = (newFilter: typeof filter) => {
     setFilter(newFilter)
     applyFilter(newFilter, allPhotos)
@@ -77,7 +85,6 @@ export default function PhotoModerationPage() {
       if (error) {
         console.error('Error moderating photo:', error)
       } else {
-        // Actualizar ambas listas localmente
         setAllPhotos(prev => prev.map(photo => 
           photo.id === id 
             ? {...photo, status, moderated_at: new Date().toISOString(), moderated_by: 'admin'}
@@ -96,6 +103,19 @@ export default function PhotoModerationPage() {
   const approvedCount = allPhotos.filter(p => p.status === 'approved').length
   const rejectedCount = allPhotos.filter(p => p.status === 'rejected').length
 
+  // Navegación de páginas
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
+  }
+
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+  }
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1)
+  }
+
   return (
     <div className="min-h-screen bg-nature-cream py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -112,9 +132,51 @@ export default function PhotoModerationPage() {
           </p>
         </motion.div>
 
+        {/* Panel de Monitoreo */}
         <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-nature-sage mb-8">
           <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white">
-            <h2 className="text-xl font-bold">Filtros</h2>
+            <h2 className="text-xl font-bold">Monitoreo y Estadísticas</h2>
+          </div>
+          
+          <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-nature-cream rounded-lg border border-nature-sage">
+              <div className="text-2xl font-bold text-nature-green">{allPhotos.length}</div>
+              <div className="text-sm text-nature-green">Total Fotos</div>
+            </div>
+            
+            <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div className="text-2xl font-bold text-yellow-700">{pendingCount}</div>
+              <div className="text-sm text-yellow-700">Pendientes</div>
+            </div>
+            
+            <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="text-2xl font-bold text-green-700">{approvedCount}</div>
+              <div className="text-sm text-green-700">Aprobadas</div>
+            </div>
+            
+            <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+              <div className="text-2xl font-bold text-red-700">{rejectedCount}</div>
+              <div className="text-sm text-red-700">Rechazadas</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-nature-sage mb-8">
+          <div className="bg-gradient-to-r from-nature-green to-nature-sage p-4 text-white flex flex-col md:flex-row justify-between items-center">
+            <h2 className="text-xl font-bold mb-2 md:mb-0">Filtros</h2>
+            
+            <div className="flex items-center space-x-2">
+              <span className="text-sm">Fotos por página:</span>
+              <select 
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                className="bg-white text-nature-green px-2 py-1 rounded border border-nature-sage"
+              >
+                <option value={12}>12</option>
+                <option value={24}>24</option>
+                <option value={48}>48</option>
+              </select>
+            </div>
           </div>
           
           <div className="p-4 flex flex-wrap gap-2">
@@ -165,7 +227,7 @@ export default function PhotoModerationPage() {
           <div className="flex justify-center items-center h-64">
             <Loader2 className="h-12 w-12 text-nature-green animate-spin" />
           </div>
-        ) : filteredPhotos.length === 0 ? (
+        ) : currentPhotos.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl border border-nature-sage">
             <p className="text-nature-green text-lg">
               {filter === 'pending' 
@@ -175,68 +237,126 @@ export default function PhotoModerationPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPhotos.map((photo) => (
-              <motion.div
-                key={photo.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-xl shadow-md overflow-hidden border border-nature-sage"
-              >
-                <div className="relative aspect-square">
-                  <Image
-                    src={photo.image_url}
-                    alt={`Foto de ${photo.guest_name}`}
-                    fill
-                    className="object-cover"
-                    onClick={() => setPreviewImage(photo.image_url)}
-                  />
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {currentPhotos.map((photo) => (
+                <motion.div
+                  key={photo.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white rounded-xl shadow-md overflow-hidden border border-nature-sage"
+                >
+                  <div className="relative aspect-square">
+                    <Image
+                      src={photo.image_url}
+                      alt={`Foto de ${photo.guest_name}`}
+                      fill
+                      className="object-cover"
+                      onClick={() => setPreviewImage(photo.image_url)}
+                    />
+                    
+                    {photo.status === 'pending' && (
+                      <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
+                        Pendiente
+                      </div>
+                    )}
+                  </div>
                   
-                  {photo.status === 'pending' && (
-                    <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
-                      Pendiente
-                    </div>
-                  )}
-                </div>
-                
-                <div className="p-4">
-                  <p className="text-nature-green font-medium mb-2">
-                    Subido por: {photo.guest_name || 'Anónimo'}
-                  </p>
-                  <p className="text-sm text-gray-500 mb-3">
-                    {new Date(photo.created_at).toLocaleDateString('es-ES')}
-                  </p>
-                  
-                  {photo.status === 'pending' && (
-                    <div className="flex gap-2">
+                  <div className="p-4">
+                    <p className="text-nature-green font-medium mb-2">
+                      Subido por: {photo.guest_name || 'Anónimo'}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-3">
+                      {new Date(photo.created_at).toLocaleDateString('es-ES')}
+                    </p>
+                    
+                    {photo.status === 'pending' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => moderatePhoto(photo.id, 'approved')}
+                          className="flex-1 bg-green-500 text-white py-2 px-3 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors"
+                        >
+                          <Check className="h-4 w-4 mr-1" /> Aprobar
+                        </button>
+                        <button
+                          onClick={() => moderatePhoto(photo.id, 'rejected')}
+                          className="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          <X className="h-4 w-4 mr-1" /> Rechazar
+                        </button>
+                      </div>
+                    )}
+                    
+                    {photo.status !== 'pending' && (
+                      <div className={`px-3 py-1 rounded-full text-center text-sm ${
+                        photo.status === 'approved' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {photo.status === 'approved' ? 'Aprobada' : 'Rechazada'}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center space-x-4 mt-8">
+                <button
+                  onClick={prevPage}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-full ${
+                    currentPage === 1 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-nature-green text-white hover:bg-nature-sage'
+                  }`}
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+
+                <div className="flex space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    // Mostrar páginas alrededor de la página actual
+                    let pageNum = currentPage - 2 + i;
+                    if (pageNum < 1) pageNum = i + 1;
+                    if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                    
+                    return (
                       <button
-                        onClick={() => moderatePhoto(photo.id, 'approved')}
-                        className="flex-1 bg-green-500 text-white py-2 px-3 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors"
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        className={`w-10 h-10 rounded-full ${
+                          currentPage === pageNum
+                            ? 'bg-nature-green text-white'
+                            : 'bg-gray-100 text-nature-green hover:bg-gray-200'
+                        }`}
                       >
-                        <Check className="h-4 w-4 mr-1" /> Aprobar
+                        {pageNum}
                       </button>
-                      <button
-                        onClick={() => moderatePhoto(photo.id, 'rejected')}
-                        className="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors"
-                      >
-                        <X className="h-4 w-4 mr-1" /> Rechazar
-                      </button>
-                    </div>
-                  )}
-                  
-                  {photo.status !== 'pending' && (
-                    <div className={`px-3 py-1 rounded-full text-center text-sm ${
-                      photo.status === 'approved' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {photo.status === 'approved' ? 'Aprobada' : 'Rechazada'}
-                    </div>
-                  )}
+                    );
+                  })}
                 </div>
-              </motion.div>
-            ))}
-          </div>
+
+                <button
+                  onClick={nextPage}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-full ${
+                    currentPage === totalPages
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-nature-green text-white hover:bg-nature-sage'
+                  }`}
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+
+                <span className="text-nature-green text-sm">
+                  Página {currentPage} de {totalPages}
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
 
