@@ -17,35 +17,35 @@ export default function MusicPlayer() {
 
   const playlist: Song[] = [
     {
+      title: "Canon in D \\ Jacob's Piano",
+      artist: "Johann Pachelbel",
+      videoId: "1elGqARTb1Q"
+    },
+    {
       title: "Married Life",
       artist: "Michael Giacchino \\ Cover by Jacob's Piano",
       videoId: "npT_R6QvWvY"
-    },
-    {
-      title: "wedding march + married life",
-      artist: "Izzy",
-      videoId: "2s5C8sNclNU"
-    },
-    {
-      title: "Te Esperaba",
-      artist: "Carlos Rivera",
-      videoId: "Rir_fuLX7HM"
-    },
-    {
-      title: "Perfect",
-      artist: "Ed Sheeran",
-      videoId: "2Vv-BfVoq4g"
-    },
-    {
-      title: "All of Me",
-      artist: "John Legend",
-      videoId: "450p7goxZqg"
-    },
-    {
-      title: "A Thousand Years",
-      artist: "Christina Perri",
-      videoId: "rtOvBOTyX00"
     }
+    // {
+    //   title: "Te Esperaba",
+    //   artist: "Carlos Rivera",
+    //   videoId: "Rir_fuLX7HM"
+    // },
+    // {
+    //   title: "Perfect",
+    //   artist: "Ed Sheeran",
+    //   videoId: "2Vv-BfVoq4g"
+    // },
+    // {
+    //   title: "All of Me",
+    //   artist: "John Legend",
+    //   videoId: "450p7goxZqg"
+    // },
+    // {
+    //   title: "A Thousand Years",
+    //   artist: "Christina Perri",
+    //   videoId: "rtOvBOTyX00"
+    // }
   ]
 
   // Cargar API de YouTube

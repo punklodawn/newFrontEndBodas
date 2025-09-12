@@ -232,14 +232,14 @@ if (player) player.classList.add('hidden')
               {selectedImage + 1} / {galleryImages.length}
             </span>
             
-            {imageDescriptions[selectedImage] && (
+            {/* {imageDescriptions[selectedImage] && (
               <span className="bg-black/50 text-white px-3 py-1 rounded-full text-sm max-w-md text-center">
                 {imageDescriptions[selectedImage]}
               </span>
-            )}
+            )} */}
           </div>
         </motion.div>
       )}
     </>
   )
-}
+  }

@@ -45,31 +45,31 @@ export default function BoardingSection() {
               <div className="absolute left-8 top-0 bottom-0 w-0 bg-nature-sage"></div>
 
               <TimelineItem
-                time="20:00 hs"
+                time=""
                 title="Despegue - Ceremonia"
                 description="Ceremonia Religiosa"
                 icon={<Plane className="h-6 w-6 text-white" />}
               />        
               <TimelineItem
-                time="21:00 hs"
+                time=""
                 title="Escala Gastronomica"
                 description="Recepción - Cena"
                 icon={<ChefHat className="h-6 w-6 text-white" />}
               />                 
               <TimelineItem
-                time="23:00 hs"
+                time=""
                 title="Turbulencia Romantica"
                 description="Primer baile + Brindis"
                 icon={<HeartPulse className="h-6 w-6 text-white" />}
               />   
               <TimelineItem
-                time="02:00 hs"
+                time=""
                 title="Carnaval en las alturas"
                 description="Hora loca - La fiesta continúa con música y baile para todos."
                 icon={<Music className="h-6 w-6 text-white" />}
               />              
               <TimelineItem
-                time="05:00 hs"
+                time=""
                 title="Zona libre de equipaje"
                 description="Servicio a bordo - Cierre de fiesta"
                 icon={<Pizza className="h-6 w-6 text-white" />}

@@ -5,6 +5,7 @@ import {
   motion,
   useScroll,
   useTransform,
+  useAnimation
 } from "framer-motion";
 import { useTheme } from "next-themes";
 
@@ -12,6 +13,23 @@ export default function FlyingPlaneAnimation() {
 
   const { theme } = useTheme();
   const mainRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+
   const { scrollYProgress } = useScroll({
     target: mainRef,
     offset: ["start start", "end end"],
@@ -60,6 +78,34 @@ export default function FlyingPlaneAnimation() {
     window.removeEventListener('touchmove', handleTouchMove);
   };
 }, []);
+
+
+  // Iniciar animación cuando el componente se monta
+  useEffect(() => {
+    controls.start({
+      width: ["0%", "200%", "0%"],
+      x: ["-100%", "100%", "-100%"],
+      transition: {
+        repeat: Number.POSITIVE_INFINITY,
+        duration: isMobile ? 3 : 2, // Más lento en móviles
+        ease: "linear",
+      }
+    });
+  }, [controls, isMobile]);
+
+  // Solución mejorada para el scroll en móvil
+  useEffect(() => {
+    // Prevenir el zoom en dispositivos táctiles pero permitir scroll
+    const preventZoom = (e: TouchEvent) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
+    
+    document.addEventListener('touchmove', preventZoom, { passive: false });
+    
+    return () => {
+      document.removeEventListener('touchmove', preventZoom);
+    };
+  }, []);
 
   const lightBgImage = "https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg";
   const darkBgImage = "https://res.cloudinary.com/dgqhmzdoo/image/upload/v1742914891/WhatsApp_Image_2025-03-24_at_20.39.43_fa4bab69_gcmb1c.jpg";
