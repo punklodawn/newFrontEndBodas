@@ -136,7 +136,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
         <InfoItem
           icon={<Users className="h-10 w-10 text-nature-green" />}
           title="Código de Vestimenta"
-          description="Elegante Sport"
+          description="Elegante Sport - Porfavor, evita el blanco o colores similares"
         />
         <InfoItem
           icon={<Gift className="h-10 w-10 text-nature-green" />}
