@@ -296,7 +296,7 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
           Confirma tu Asistencia
         </h2>
         <p className="text-lg text-nature-green max-w-2xl mx-auto">
-          Por favor completa tu check-in antes del 15 de enero 2026 para asegurar tu
+          Por favor completa tu check-in antes del 15 de diciembre 2026 para asegurar tu
           asiento en nuestro vuelo hacia la felicidad
         </p>
       </motion.div>
