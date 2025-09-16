@@ -116,12 +116,12 @@ export default function OurStory() {
                   initial={{ opacity: 0, y: 8, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  // transition={{ 
-                  //   duration: 0.4, 
-                  //   ease: "easeOut"
-                  // }}
+                  transition={{ 
+                    duration: 0.4, 
+                    ease: "easeOut"
+                  }}
                 >
-                  "{line}"
+                  {line}
                 </motion.p>
               ))}
             </AnimatePresence>
@@ -136,7 +136,7 @@ export default function OurStory() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  "{currentText}"
+                  {currentText}
                   {/* Cursor parpadeante */}
                   <motion.span
                     className="inline-block w-0.5 h-4 md:h-5 bg-nature-sage ml-1 align-middle" /* cursor más pequeño */
