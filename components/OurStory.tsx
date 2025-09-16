@@ -102,7 +102,7 @@ export default function OurStory() {
       <div className="text-center py-6 md:py-8 relative overflow-hidden"> {/* Responsive padding */}
         <div className="w-full mx-auto px-4 md:px-6"> {/* Responsive padding, eliminado max-w */}
           {/* Contenedor principal de texto */}
-          <div className="relative min-h-[340px] md:min-h-[340px] flex flex-col items-center justify-center space-y-3 md:space-y-4"> {/* Altura responsive */}
+          <div className="relative min-h-[360px] md:min-h-[380px] flex flex-col items-center justify-center space-y-3 md:space-y-4"> {/* Altura responsive */}
             
             {/* Efecto de fondo suave */}
             <div className="absolute inset-0 bg-gradient-to-b from-nature-green/5 to-transparent pointer-events-none rounded-lg" />
