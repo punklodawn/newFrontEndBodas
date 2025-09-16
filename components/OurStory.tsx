@@ -102,7 +102,7 @@ export default function OurStory() {
       <div className="text-center py-6 md:py-8 relative overflow-hidden"> {/* Responsive padding */}
         <div className="w-full mx-auto px-4 md:px-6"> {/* Responsive padding, eliminado max-w */}
           {/* Contenedor principal de texto */}
-          <div className="relative min-h-[280px] md:min-h-[320px] flex flex-col items-center justify-center space-y-3 md:space-y-4"> {/* Altura responsive */}
+          <div className="relative min-h-[300px] md:min-h-[3400px] flex flex-col items-center justify-center space-y-3 md:space-y-4"> {/* Altura responsive */}
             
             {/* Efecto de fondo suave */}
             <div className="absolute inset-0 bg-gradient-to-b from-nature-green/5 to-transparent pointer-events-none rounded-lg" />
@@ -130,7 +130,7 @@ export default function OurStory() {
             <AnimatePresence>
               {currentText && (
                 <motion.p 
-                  className="text-sm md:text-base text-nature-sage font-light leading-relaxed italic text-center px-1 md:px-2" /* Texto más pequeño */
+                  className="text-sm md:text-base text-nature-green font-light leading-relaxed italic text-center px-1 md:px-2" /* Texto más pequeño */
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
