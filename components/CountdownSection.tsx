@@ -73,7 +73,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
     </h2>
     <p className="text-lg text-nature-green max-w-2xl mx-auto">
       Nuestro vuelo despegará pronto. Revisa el tiempo restante en
-      nuestro tablero de salidas
+      nuestro tablero de salida
     </p>
   </motion.div>
 

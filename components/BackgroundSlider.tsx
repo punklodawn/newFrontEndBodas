@@ -30,7 +30,7 @@ export default function BackgroundSlider() {
           className="absolute inset-0 bg-cover bg-center"
           initial={{ 
             opacity: 0,
-            scale: 1.1,
+            scale: 1,
             rotate: 0.5
           }}
           animate={{ 
@@ -40,11 +40,11 @@ export default function BackgroundSlider() {
           }}
           exit={{ 
             opacity: 0,
-            scale: 1.1,
+            scale: 1,
             rotate: -0.5
           }}
           transition={{ 
-            duration: 2,
+            duration: 3,
             ease: "easeInOut"
           }}
           style={{
@@ -88,14 +88,7 @@ export default function BackgroundSlider() {
         >
           14 de Febrero, 2026
         </motion.p>
-        
-        {/* Corazones flotantes pequeños */}
-        <div className="absolute -top-10 -left-10 text-rose-200 opacity-60 animate-pulse">
-          💖
-        </div>
-        <div className="absolute -bottom-10 -right-10 text-rose-200 opacity-60 animate-pulse" style={{ animationDelay: '1s' }}>
-          💖
-        </div>
+      
       </div>
     </div>
   )

@@ -1,6 +1,5 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Heart } from 'lucide-react'
 import PhotoGallery from '@/components/PhotoGallery'
 import OurStory from '@/components/OurStory'
 
@@ -30,7 +29,7 @@ export default function FlightSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid xl:grid-cols-2 gap-8">
           <OurStory />
           <PhotoGallery />
         </div>
