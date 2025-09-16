@@ -31,17 +31,14 @@ export default function BackgroundSlider() {
           initial={{ 
             opacity: 0,
             scale: 1,
-            rotate: 0.5
           }}
           animate={{ 
             opacity: 1,
             scale: 1,
-            rotate: 0
           }}
           exit={{ 
             opacity: 0,
             scale: 1,
-            rotate: -0.5
           }}
           transition={{ 
             duration: 3,
