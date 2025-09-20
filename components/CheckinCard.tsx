@@ -67,7 +67,7 @@ const CheckinCard = () => {
                 </div>
                 <div>
                   <p className="text-sm text-nature-green mb-1">HORA</p>
-                  <p className="text-2xl font-bold">20:00 HRS</p>
+                  <p className="text-2xl font-bold">21:00 HRS</p>
                 </div>
               </div>
 
