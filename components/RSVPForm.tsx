@@ -360,7 +360,7 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
                             id={`companion-${companion.id}`}
                             checked={companion.is_attending}
                             onChange={(e) => handleCompanionChange(companion.id, e.target.checked)}
-                            label={`${companion.name} (${companion.is_adult ? "Adulto" : "Niño"})`}
+                            label={`${companion.name} `}
                           />
                         </div>
                       ))

@@ -46,19 +46,19 @@ export default function BoardingSection() {
 
               <TimelineItem
                 time=""
-                title="Despegue - Ceremonia"
+                title="Despegue"
                 description="Ceremonia Religiosa"
                 icon={<Plane className="h-6 w-6 text-white" />}
               />        
               <TimelineItem
                 time=""
-                title="Escala Gastronomica"
+                title="Escala Gastronómica"
                 description="Recepción - Cena"
                 icon={<ChefHat className="h-6 w-6 text-white" />}
               />                 
               <TimelineItem
                 time=""
-                title="Turbulencia Romantica"
+                title="Turbulencia Romántica"
                 description="Primer baile + Brindis"
                 icon={<HeartPulse className="h-6 w-6 text-white" />}
               />   

@@ -22,7 +22,6 @@ const BaggageSection = () => {
             Recogida de Equipaje
           </h2>
           <p className="text-lg text-nature-green max-w-2xl mx-auto">
-            Si deseas hacernos un regalo, aquí encontrarás la opcion
           </p>
         </motion.div>
 
