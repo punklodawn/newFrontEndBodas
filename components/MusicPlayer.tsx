@@ -17,14 +17,14 @@ export default function MusicPlayer() {
 
   const playlist: Song[] = [
     {
-      title: "Canon in D \\ Jacob's Piano",
-      artist: "Johann Pachelbel",
-      videoId: "1elGqARTb1Q"
+      title: "A thousand years",
+      artist: "Christina Perri (sax cover) Graziatto",
+      videoId: "fJ0o57DOIiA"
     },
     {
-      title: "Married Life",
-      artist: "Michael Giacchino \\ Cover by Jacob's Piano",
-      videoId: "npT_R6QvWvY"
+      title: "Marry You",
+      artist: "Bruno Mars (Adriano de Souza sax cover)",
+      videoId: "RWGxVm0sGAc"
     }
     // {
     //   title: "Te Esperaba",
