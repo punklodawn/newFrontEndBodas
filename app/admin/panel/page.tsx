@@ -124,14 +124,57 @@ useEffect(() => {
     }
   };
 
-  // Filtrar invitados basado en el término de búsqueda
+ // Estado para el filtro activo
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+// Filtrar invitados basado en el término de búsqueda Y el filtro activo
   const filteredGuests = useMemo(() => {
-    return allGuests.filter(
+    let filtered = allGuests.filter(
       (guest) =>
         guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         guest.code.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [allGuests, searchTerm]);
+
+    // Aplicar filtros adicionales si hay uno activo
+    if (activeFilter) {
+      switch (activeFilter) {
+        case 'attending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === true || 
+            guest.companions.some(comp => comp.is_attending === true)
+          );
+          break;
+        case 'notAttending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === false || 
+            guest.companions.some(comp => comp.is_attending === false)
+          );
+          break;
+        case 'pending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === null || 
+            guest.companions.some(comp => comp.is_attending === null)
+          );
+          break;
+        case 'adults':
+          // Todos los invitados principales son adultos, más los acompañantes adultos
+          filtered = filtered.filter(guest => 
+            guest.companions.some(comp => comp.is_adult === true)
+          );
+          break;
+        case 'children':
+          filtered = filtered.filter(guest => 
+            guest.companions.some(comp => comp.is_adult === false)
+          );
+          break;
+        default:
+          break;
+      }
+    }
+
+    return filtered;
+  }, [allGuests, searchTerm, activeFilter]);
+
 
   // Calcular invitados para la página actual
   const currentGuests = useMemo(() => {
@@ -305,56 +348,7 @@ useEffect(() => {
     return stats;
   }, [allGuests]);
 
-   // Estado para el filtro activo
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  // Filtrar invitados basado en el término de búsqueda Y el filtro activo
-  const filteredGuests = useMemo(() => {
-    let filtered = allGuests.filter(
-      (guest) =>
-        guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        guest.code.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // Aplicar filtros adicionales si hay uno activo
-    if (activeFilter) {
-      switch (activeFilter) {
-        case 'attending':
-          filtered = filtered.filter(guest => 
-            guest.is_attending === true || 
-            guest.companions.some(comp => comp.is_attending === true)
-          );
-          break;
-        case 'notAttending':
-          filtered = filtered.filter(guest => 
-            guest.is_attending === false || 
-            guest.companions.some(comp => comp.is_attending === false)
-          );
-          break;
-        case 'pending':
-          filtered = filtered.filter(guest => 
-            guest.is_attending === null || 
-            guest.companions.some(comp => comp.is_attending === null)
-          );
-          break;
-        case 'adults':
-          // Todos los invitados principales son adultos, más los acompañantes adultos
-          filtered = filtered.filter(guest => 
-            guest.companions.some(comp => comp.is_adult === true)
-          );
-          break;
-        case 'children':
-          filtered = filtered.filter(guest => 
-            guest.companions.some(comp => comp.is_adult === false)
-          );
-          break;
-        default:
-          break;
-      }
-    }
-
-    return filtered;
-  }, [allGuests, searchTerm, activeFilter]);
 
   return (
     <AdminGuard>
