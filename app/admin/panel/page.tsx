@@ -280,27 +280,81 @@ useEffect(() => {
     totalChildren: 0
   };
 
-  allGuests.forEach(guest => {
-    // Contar invitado principal
-    stats.totalGuests += 1;
-    if (guest.is_attending === true) stats.totalAttending += 1;
-    if (guest.is_attending === false) stats.totalNotAttending += 1;
-    if (guest.is_attending === null) stats.totalPending += 1;
 
-    // Contar acompañantes
-    guest.companions.forEach(companion => {
+    allGuests.forEach(guest => {
+      // Contar invitado principal (SIEMPRE es adulto)
       stats.totalGuests += 1;
-      if (companion.is_attending === true) stats.totalAttending += 1;
-      if (companion.is_attending === false) stats.totalNotAttending += 1;
-      if (companion.is_attending === null) stats.totalPending += 1;
+      stats.totalAdults += 1; // Invitado principal siempre es adulto
       
-      if (companion.is_adult) stats.totalAdults += 1;
-      else stats.totalChildren += 1;
-    });
-  });
+      if (guest.is_attending === true) stats.totalAttending += 1;
+      if (guest.is_attending === false) stats.totalNotAttending += 1;
+      if (guest.is_attending === null) stats.totalPending += 1;
 
-  return stats;
-}, [allGuests]);
+      // Contar acompañantes
+      guest.companions.forEach(companion => {
+        stats.totalGuests += 1;
+        if (companion.is_attending === true) stats.totalAttending += 1;
+        if (companion.is_attending === false) stats.totalNotAttending += 1;
+        if (companion.is_attending === null) stats.totalPending += 1;
+        
+        if (companion.is_adult) stats.totalAdults += 1;
+        else stats.totalChildren += 1;
+      });
+    });
+
+    return stats;
+  }, [allGuests]);
+
+   // Estado para el filtro activo
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  // Filtrar invitados basado en el término de búsqueda Y el filtro activo
+  const filteredGuests = useMemo(() => {
+    let filtered = allGuests.filter(
+      (guest) =>
+        guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        guest.code.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Aplicar filtros adicionales si hay uno activo
+    if (activeFilter) {
+      switch (activeFilter) {
+        case 'attending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === true || 
+            guest.companions.some(comp => comp.is_attending === true)
+          );
+          break;
+        case 'notAttending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === false || 
+            guest.companions.some(comp => comp.is_attending === false)
+          );
+          break;
+        case 'pending':
+          filtered = filtered.filter(guest => 
+            guest.is_attending === null || 
+            guest.companions.some(comp => comp.is_attending === null)
+          );
+          break;
+        case 'adults':
+          // Todos los invitados principales son adultos, más los acompañantes adultos
+          filtered = filtered.filter(guest => 
+            guest.companions.some(comp => comp.is_adult === true)
+          );
+          break;
+        case 'children':
+          filtered = filtered.filter(guest => 
+            guest.companions.some(comp => comp.is_adult === false)
+          );
+          break;
+        default:
+          break;
+      }
+    }
+
+    return filtered;
+  }, [allGuests, searchTerm, activeFilter]);
 
   return (
     <AdminGuard>
@@ -478,46 +532,99 @@ useEffect(() => {
             </div>
           </div>
 
-                    {/* Estadísticas */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-              <h3 className="text-sm font-medium text-gray-500">Total Invitados</h3>
-              <p className="text-2xl font-semibold">{calculateStats.totalGuests}</p>
-            </div>
-            <div className="bg-green-50 p-4 rounded-lg shadow border border-green-200">
-              <h3 className="text-sm font-medium text-green-600">Confirmados</h3>
-              <p className="text-2xl font-semibold text-green-700">{calculateStats.totalAttending}</p>
-            </div>
-            <div className="bg-yellow-50 p-4 rounded-lg shadow border border-yellow-200">
-              <h3 className="text-sm font-medium text-yellow-600">Por confirmar</h3>
-              <p className="text-2xl font-semibold text-yellow-700">{calculateStats.totalPending}</p>
-            </div>
-            <div className="bg-red-50 p-4 rounded-lg shadow border border-red-200">
-              <h3 className="text-sm font-medium text-red-600">No asistirán</h3>
-              <p className="text-2xl font-semibold text-red-700">{calculateStats.totalNotAttending}</p>
-            </div>
+        {/* Estadísticas INTERACTIVAS */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === null 
+                ? "bg-white border-gray-200" 
+                : "bg-blue-50 border-blue-200"
+            }`}
+            onClick={() => setActiveFilter(null)}
+          >
+            <h3 className="text-sm font-medium text-gray-500">Total Invitados</h3>
+            <p className="text-2xl font-semibold">{calculateStats.totalGuests}</p>
           </div>
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === 'attending' 
+                ? "bg-green-100 border-green-300" 
+                : "bg-green-50 border-green-200"
+            }`}
+            onClick={() => setActiveFilter('attending')}
+          >
+            <h3 className="text-sm font-medium text-green-600">Confirmados</h3>
+            <p className="text-2xl font-semibold text-green-700">{calculateStats.totalAttending}</p>
+          </div>
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === 'pending' 
+                ? "bg-yellow-100 border-yellow-300" 
+                : "bg-yellow-50 border-yellow-200"
+            }`}
+            onClick={() => setActiveFilter('pending')}
+          >
+            <h3 className="text-sm font-medium text-yellow-600">Por confirmar</h3>
+            <p className="text-2xl font-semibold text-yellow-700">{calculateStats.totalPending}</p>
+          </div>
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === 'notAttending' 
+                ? "bg-red-100 border-red-300" 
+                : "bg-red-50 border-red-200"
+            }`}
+            onClick={() => setActiveFilter('notAttending')}
+          >
+            <h3 className="text-sm font-medium text-red-600">No asistirán</h3>
+            <p className="text-2xl font-semibold text-red-700">{calculateStats.totalNotAttending}</p>
+          </div>
+        </div>
 
-          {/* Desglose adultos/niños (opcional) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div className="bg-blue-50 p-4 rounded-lg shadow border border-blue-200">
-              <h3 className="text-sm font-medium text-blue-600">Total Adultos</h3>
-              <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalAdults}</p>
-            </div>
-            <div className="bg-purple-50 p-4 rounded-lg shadow border border-purple-200">
-              <h3 className="text-sm font-medium text-purple-600">Total Niños</h3>
-              <p className="text-2xl font-semibold text-purple-700">{calculateStats.totalChildren}</p>
-            </div>
+        {/* Desglose adultos/niños INTERACTIVO */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === 'adults' 
+                ? "bg-blue-100 border-blue-300" 
+                : "bg-blue-50 border-blue-200"
+            }`}
+            onClick={() => setActiveFilter('adults')}
+          >
+            <h3 className="text-sm font-medium text-blue-600">Total Adultos</h3>
+            <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalAdults}</p>
           </div>
+          <div 
+            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+              activeFilter === 'children' 
+                ? "bg-purple-100 border-purple-300" 
+                : "bg-purple-50 border-purple-200"
+            }`}
+            onClick={() => setActiveFilter('children')}
+          >
+            <h3 className="text-sm font-medium text-purple-600">Total Niños</h3>
+            <p className="text-2xl font-semibold text-purple-700">{calculateStats.totalChildren}</p>
+          </div>
+        </div>
 
-          {/* Info de resultados */}
-          <div className="mb-4 text-sm text-gray-600">
-            Mostrando {currentGuests.length} de {filteredGuests.length}{" "}
-            invitados
-            {searchTerm && (
-              <span> (filtrados de {allGuests.length} totales)</span>
-            )}
+        {/* Indicador de filtro activo */}
+        {activeFilter && (
+          <div className="mb-4 flex items-center">
+            <span className="text-sm text-gray-600 mr-2">Filtro activo:</span>
+            <span className="text-sm font-medium text-blue-600 capitalize">
+              {activeFilter === 'attending' && 'Confirmados'}
+              {activeFilter === 'notAttending' && 'No asistirán'}
+              {activeFilter === 'pending' && 'Por confirmar'}
+              {activeFilter === 'adults' && 'Adultos'}
+              {activeFilter === 'children' && 'Niños'}
+            </span>
+            <button 
+              onClick={() => setActiveFilter(null)}
+              className="ml-3 text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
+            >
+              Limpiar filtro
+            </button>
           </div>
+        )}
 
           {loading ? (
             <p>Cargando lista de invitados...</p>
