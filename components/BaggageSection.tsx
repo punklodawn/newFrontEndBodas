@@ -22,6 +22,7 @@ const BaggageSection = () => {
             Recogida de Equipaje
           </h2>
           <p className="text-lg text-nature-green max-w-2xl mx-auto">
+            Tu presencia es nuestro mejor regalo. Pero si deseas obsequiarnos algo, puedes contribuir a nuestra luna de miel.
           </p>
         </motion.div>
 

@@ -141,7 +141,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
         <InfoItem
           icon={<Gift className="h-10 w-10 text-nature-green" />}
           title="Regalos"
-          description="Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo, puedes contribuir a nuestra luna de miel."
+          description="Tu presencia es nuestro mejor regalo. Pero si deseas obsequiarnos algo, puedes contribuir a nuestra luna de miel."
         />
       </div>
     </div>
