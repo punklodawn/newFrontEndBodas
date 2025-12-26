@@ -19,7 +19,7 @@ export default function CountdownSection() {
       const [mounted, setMounted] = useState(false);
 
     // Countdown timer
-    const weddingDate = new Date("2026-02-14T21:00:00");
+    const weddingDate = new Date("2026-02-14T21:30:00");
     const [timeLeft, setTimeLeft] = useState({
       days: 0,
       hours: 0,
@@ -121,7 +121,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
         <InfoItem
           icon={<CalendarHeart className="h-10 w-10 text-nature-green" />}
           title="Fecha y Hora"
-          description="Nuestro vuelo despegara el 14 de Febrero 2026, a las 21:00 horas. Te recomendamos llegar 30 minutos antes."
+          description="Nuestro vuelo despegara el 14 de Febrero 2026, a las 21:30 horas. Te recomendamos llegar 30 minutos antes."
         />
         <InfoItem
           icon={<MapPin className="h-10 w-10 text-nature-green" />}
@@ -131,7 +131,7 @@ className="min-h-screen flex flex-col items-center justify-center relative py-20
         <InfoItem
           icon={<MapPin className="h-10 w-10 text-nature-green" />}
           title="Ubicación - Destino"
-          description='RECEPCIÓN: "Golf Club - La Esperanza." 21:00 hs'
+          description='RECEPCIÓN: "Golf Club - La Esperanza." 22:00 hs'
         />
         <InfoItem
           icon={<Users className="h-10 w-10 text-nature-green" />}
