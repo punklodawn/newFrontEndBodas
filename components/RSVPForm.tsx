@@ -119,10 +119,10 @@ const [companions, setCompanions] = useState<CompanionGuest[]>([]);
       );
       setStep("form");
       
-      setNotification({
-        message: `¡Hola ${mainGuestData.name}! Por favor confirma la asistencia de tu grupo.`,
-        type: "success",
-      });
+      // setNotification({
+      //   message: `¡Hola ${mainGuestData.name}! Por favor confirma la asistencia de tu grupo.`,
+      //   type: "success",
+      // });
     } catch (error) {
       console.error("Error al verificar el código:", error);
       setNotification({
