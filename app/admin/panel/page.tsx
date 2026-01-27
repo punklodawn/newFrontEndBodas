@@ -11,6 +11,7 @@ interface MainGuest {
   code: string;
   is_attending?: boolean | null;
   dietary_restrictions?: string | null;
+  gender?: string | null; // Agregado
 }
 
 interface CompanionGuest {
@@ -19,6 +20,7 @@ interface CompanionGuest {
   name: string;
   is_adult: boolean;
   is_attending: boolean | null;
+  gender?: string | null; // Agregado
 }
 
 interface GuestStats {
@@ -28,6 +30,9 @@ interface GuestStats {
   totalPending: number;
   totalAdults: number;
   totalChildren: number;
+  totalMen: number; // Agregado
+  totalWomen: number; // Agregado
+  totalOtherGender: number; // Agregado
 }
 
 export default function AdminPanel() {
@@ -36,10 +41,18 @@ export default function AdminPanel() {
     name: "",
     email: "",
     code: "",
+    gender: null, // Agregado
   });
 
   const [companions, setCompanions] = useState<CompanionGuest[]>([
-    { name: "", is_adult: true, main_guest_id: 0, id: 0, is_attending: null },
+    { 
+      name: "", 
+      is_adult: true, 
+      main_guest_id: 0, 
+      id: 0, 
+      is_attending: null,
+      gender: null // Agregado
+    },
   ]);
 
   const [allGuests, setAllGuests] = useState<
@@ -55,16 +68,16 @@ export default function AdminPanel() {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const guestsPerPage = 10; // Puedes ajustar este número según prefieras
+  const guestsPerPage = 10;
 
-useEffect(() => {
-  const player = document.querySelector('.music-player')
-  if (player) player.classList.add('hidden')
-  
-  return () => {
-    if (player) player.classList.remove('hidden')
-  }
-}, [])
+  useEffect(() => {
+    const player = document.querySelector('.music-player')
+    if (player) player.classList.add('hidden')
+    
+    return () => {
+      if (player) player.classList.remove('hidden')
+    }
+  }, [])
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -124,10 +137,10 @@ useEffect(() => {
     }
   };
 
- // Estado para el filtro activo
+  // Estado para el filtro activo
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-// Filtrar invitados basado en el término de búsqueda Y el filtro activo
+  // Filtrar invitados basado en el término de búsqueda Y el filtro activo
   const filteredGuests = useMemo(() => {
     let filtered = allGuests.filter(
       (guest) =>
@@ -167,6 +180,18 @@ useEffect(() => {
             guest.companions.some(comp => comp.is_adult === false)
           );
           break;
+        case 'men':
+          filtered = filtered.filter(guest => 
+            guest.gender === 'M' || 
+            guest.companions.some(comp => comp.gender === 'M')
+          );
+          break;
+        case 'women':
+          filtered = filtered.filter(guest => 
+            guest.gender === 'F' || 
+            guest.companions.some(comp => comp.gender === 'F')
+          );
+          break;
         default:
           break;
       }
@@ -174,7 +199,6 @@ useEffect(() => {
 
     return filtered;
   }, [allGuests, searchTerm, activeFilter]);
-
 
   // Calcular invitados para la página actual
   const currentGuests = useMemo(() => {
@@ -211,6 +235,7 @@ useEffect(() => {
         main_guest_id: 0,
         id: 0,
         is_attending: null,
+        gender: null,
       },
     ]);
   };
@@ -251,6 +276,7 @@ useEffect(() => {
             name: mainGuest.name,
             email: mainGuest.email || null,
             code: mainGuest.code,
+            gender: mainGuest.gender || null,
           },
         ])
         .select()
@@ -267,6 +293,7 @@ useEffect(() => {
             is_adult: c.is_adult,
             main_guest_id: mainGuestData.id,
             is_attending: null,
+            gender: c.gender || null,
           }));
 
         if (companionsToInsert.length > 0) {
@@ -283,6 +310,7 @@ useEffect(() => {
         name: "",
         email: "",
         code: "",
+        gender: null,
       });
       setCompanions([
         {
@@ -291,6 +319,7 @@ useEffect(() => {
           main_guest_id: 0,
           id: 0,
           is_attending: null,
+          gender: null,
         },
       ]);
 
@@ -312,22 +341,28 @@ useEffect(() => {
     }));
   };
 
-
   const calculateStats = useMemo(() => {
-  const stats: GuestStats = {
-    totalGuests: 0,
-    totalAttending: 0,
-    totalNotAttending: 0,
-    totalPending: 0,
-    totalAdults: 0,
-    totalChildren: 0
-  };
-
+    const stats: GuestStats = {
+      totalGuests: 0,
+      totalAttending: 0,
+      totalNotAttending: 0,
+      totalPending: 0,
+      totalAdults: 0,
+      totalChildren: 0,
+      totalMen: 0,
+      totalWomen: 0,
+      totalOtherGender: 0
+    };
 
     allGuests.forEach(guest => {
       // Contar invitado principal (SIEMPRE es adulto)
       stats.totalGuests += 1;
       stats.totalAdults += 1; // Invitado principal siempre es adulto
+      
+      // Contar género del invitado principal
+      if (guest.gender === 'M') stats.totalMen += 1;
+      else if (guest.gender === 'F') stats.totalWomen += 1;
+      else if (guest.gender === 'O' || guest.gender === null) stats.totalOtherGender += 1;
       
       if (guest.is_attending === true) stats.totalAttending += 1;
       if (guest.is_attending === false) stats.totalNotAttending += 1;
@@ -342,13 +377,16 @@ useEffect(() => {
         
         if (companion.is_adult) stats.totalAdults += 1;
         else stats.totalChildren += 1;
+        
+        // Contar género del acompañante
+        if (companion.gender === 'M') stats.totalMen += 1;
+        else if (companion.gender === 'F') stats.totalWomen += 1;
+        else if (companion.gender === 'O' || companion.gender === null) stats.totalOtherGender += 1;
       });
     });
 
     return stats;
   }, [allGuests]);
-
-
 
   return (
     <AdminGuard>
@@ -392,6 +430,26 @@ useEffect(() => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Género
+                </label>
+                <select
+                  value={mainGuest.gender || ""}
+                  onChange={(e) =>
+                    handleMainGuestChange("gender", e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="">Seleccionar género</option>
+                  <option value="M">Hombre</option>
+                  <option value="F">Mujer</option>
+                  <option value="O">Otro</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Código de Invitación
                 </label>
                 <div className="flex gap-2">
@@ -413,18 +471,18 @@ useEffect(() => {
                   </button>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email (Opcional)
-              </label>
-              <input
-                type="email"
-                value={mainGuest.email || ""}
-                onChange={(e) => handleMainGuestChange("email", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (Opcional)
+                </label>
+                <input
+                  type="email"
+                  value={mainGuest.email || ""}
+                  onChange={(e) => handleMainGuestChange("email", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
             </div>
 
             {/* Sección de acompañantes */}
@@ -454,6 +512,18 @@ useEffect(() => {
                       }
                       className="flex-1 p-2 border border-gray-300 rounded"
                     />
+                    <select
+                      value={companion.gender || ""}
+                      onChange={(e) =>
+                        handleCompanionChange(index, "gender", e.target.value)
+                      }
+                      className="p-2 border border-gray-300 rounded w-32"
+                    >
+                      <option value="">Género</option>
+                      <option value="M">Hombre</option>
+                      <option value="F">Mujer</option>
+                      <option value="O">Otro</option>
+                    </select>
                     <select
                       value={companion.is_adult ? "adult" : "child"}
                       onChange={(e) =>
@@ -504,7 +574,7 @@ useEffect(() => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setCurrentPage(1); // Resetear a la primera página al buscar
+                  setCurrentPage(1);
                 }}
                 className="w-full p-2 pl-10 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -526,99 +596,131 @@ useEffect(() => {
             </div>
           </div>
 
-        {/* Estadísticas INTERACTIVAS */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === null 
-                ? "bg-white border-gray-200" 
-                : "bg-blue-50 border-blue-200"
-            }`}
-            onClick={() => setActiveFilter(null)}
-          >
-            <h3 className="text-sm font-medium text-gray-500">Total Invitados</h3>
-            <p className="text-2xl font-semibold">{calculateStats.totalGuests}</p>
-          </div>
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === 'attending' 
-                ? "bg-green-100 border-green-300" 
-                : "bg-green-50 border-green-200"
-            }`}
-            onClick={() => setActiveFilter('attending')}
-          >
-            <h3 className="text-sm font-medium text-green-600">Confirmados</h3>
-            <p className="text-2xl font-semibold text-green-700">{calculateStats.totalAttending}</p>
-          </div>
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === 'pending' 
-                ? "bg-yellow-100 border-yellow-300" 
-                : "bg-yellow-50 border-yellow-200"
-            }`}
-            onClick={() => setActiveFilter('pending')}
-          >
-            <h3 className="text-sm font-medium text-yellow-600">Por confirmar</h3>
-            <p className="text-2xl font-semibold text-yellow-700">{calculateStats.totalPending}</p>
-          </div>
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === 'notAttending' 
-                ? "bg-red-100 border-red-300" 
-                : "bg-red-50 border-red-200"
-            }`}
-            onClick={() => setActiveFilter('notAttending')}
-          >
-            <h3 className="text-sm font-medium text-red-600">No asistirán</h3>
-            <p className="text-2xl font-semibold text-red-700">{calculateStats.totalNotAttending}</p>
-          </div>
-        </div>
-
-        {/* Desglose adultos/niños INTERACTIVO */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === 'adults' 
-                ? "bg-blue-100 border-blue-300" 
-                : "bg-blue-50 border-blue-200"
-            }`}
-            onClick={() => setActiveFilter('adults')}
-          >
-            <h3 className="text-sm font-medium text-blue-600">Total Adultos</h3>
-            <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalAdults}</p>
-          </div>
-          <div 
-            className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
-              activeFilter === 'children' 
-                ? "bg-purple-100 border-purple-300" 
-                : "bg-purple-50 border-purple-200"
-            }`}
-            onClick={() => setActiveFilter('children')}
-          >
-            <h3 className="text-sm font-medium text-purple-600">Total Niños</h3>
-            <p className="text-2xl font-semibold text-purple-700">{calculateStats.totalChildren}</p>
-          </div>
-        </div>
-
-        {/* Indicador de filtro activo */}
-        {activeFilter && (
-          <div className="mb-4 flex items-center">
-            <span className="text-sm text-gray-600 mr-2">Filtro activo:</span>
-            <span className="text-sm font-medium text-blue-600 capitalize">
-              {activeFilter === 'attending' && 'Confirmados'}
-              {activeFilter === 'notAttending' && 'No asistirán'}
-              {activeFilter === 'pending' && 'Por confirmar'}
-              {activeFilter === 'adults' && 'Adultos'}
-              {activeFilter === 'children' && 'Niños'}
-            </span>
-            <button 
+          {/* Estadísticas INTERACTIVAS */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === null 
+                  ? "bg-white border-gray-200" 
+                  : "bg-blue-50 border-blue-200"
+              }`}
               onClick={() => setActiveFilter(null)}
-              className="ml-3 text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
             >
-              Limpiar filtro
-            </button>
+              <h3 className="text-sm font-medium text-gray-500">Total Invitados</h3>
+              <p className="text-2xl font-semibold">{calculateStats.totalGuests}</p>
+            </div>
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'attending' 
+                  ? "bg-green-100 border-green-300" 
+                  : "bg-green-50 border-green-200"
+              }`}
+              onClick={() => setActiveFilter('attending')}
+            >
+              <h3 className="text-sm font-medium text-green-600">Confirmados</h3>
+              <p className="text-2xl font-semibold text-green-700">{calculateStats.totalAttending}</p>
+            </div>
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'pending' 
+                  ? "bg-yellow-100 border-yellow-300" 
+                  : "bg-yellow-50 border-yellow-200"
+              }`}
+              onClick={() => setActiveFilter('pending')}
+            >
+              <h3 className="text-sm font-medium text-yellow-600">Por confirmar</h3>
+              <p className="text-2xl font-semibold text-yellow-700">{calculateStats.totalPending}</p>
+            </div>
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'notAttending' 
+                  ? "bg-red-100 border-red-300" 
+                  : "bg-red-50 border-red-200"
+              }`}
+              onClick={() => setActiveFilter('notAttending')}
+            >
+              <h3 className="text-sm font-medium text-red-600">No asistirán</h3>
+              <p className="text-2xl font-semibold text-red-700">{calculateStats.totalNotAttending}</p>
+            </div>
           </div>
-        )}
+
+          {/* Desglose adultos/niños INTERACTIVO */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'adults' 
+                  ? "bg-blue-100 border-blue-300" 
+                  : "bg-blue-50 border-blue-200"
+              }`}
+              onClick={() => setActiveFilter('adults')}
+            >
+              <h3 className="text-sm font-medium text-blue-600">Total Adultos</h3>
+              <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalAdults}</p>
+            </div>
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'children' 
+                  ? "bg-purple-100 border-purple-300" 
+                  : "bg-purple-50 border-purple-200"
+              }`}
+              onClick={() => setActiveFilter('children')}
+            >
+              <h3 className="text-sm font-medium text-purple-600">Total Niños</h3>
+              <p className="text-2xl font-semibold text-purple-700">{calculateStats.totalChildren}</p>
+            </div>
+          </div>
+
+          {/* Estadísticas de Género */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'men' 
+                  ? "bg-blue-100 border-blue-300" 
+                  : "bg-blue-50 border-blue-200"
+              }`}
+              onClick={() => setActiveFilter('men')}
+            >
+              <h3 className="text-sm font-medium text-blue-600">Hombres</h3>
+              <p className="text-2xl font-semibold text-blue-700">{calculateStats.totalMen}</p>
+            </div>
+            <div 
+              className={`p-4 rounded-lg shadow border cursor-pointer transition-all ${
+                activeFilter === 'women' 
+                  ? "bg-pink-100 border-pink-300" 
+                  : "bg-pink-50 border-pink-200"
+              }`}
+              onClick={() => setActiveFilter('women')}
+            >
+              <h3 className="text-sm font-medium text-pink-600">Mujeres</h3>
+              <p className="text-2xl font-semibold text-pink-700">{calculateStats.totalWomen}</p>
+            </div>
+            <div className="p-4 rounded-lg shadow border bg-gray-50 border-gray-200">
+              <h3 className="text-sm font-medium text-gray-600">Otros/No especificado</h3>
+              <p className="text-2xl font-semibold text-gray-700">{calculateStats.totalOtherGender}</p>
+            </div>
+          </div>
+
+          {/* Indicador de filtro activo */}
+          {activeFilter && (
+            <div className="mb-4 flex items-center">
+              <span className="text-sm text-gray-600 mr-2">Filtro activo:</span>
+              <span className="text-sm font-medium text-blue-600 capitalize">
+                {activeFilter === 'attending' && 'Confirmados'}
+                {activeFilter === 'notAttending' && 'No asistirán'}
+                {activeFilter === 'pending' && 'Por confirmar'}
+                {activeFilter === 'adults' && 'Adultos'}
+                {activeFilter === 'children' && 'Niños'}
+                {activeFilter === 'men' && 'Hombres'}
+                {activeFilter === 'women' && 'Mujeres'}
+              </span>
+              <button 
+                onClick={() => setActiveFilter(null)}
+                className="ml-3 text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
+              >
+                Limpiar filtro
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <p>Cargando lista de invitados...</p>
@@ -636,6 +738,9 @@ useEffect(() => {
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Género
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Confirmación
@@ -660,6 +765,12 @@ useEffect(() => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {guest.email || "-"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {guest.gender === 'M' && 'Hombre'}
+                            {guest.gender === 'F' && 'Mujer'}
+                            {guest.gender === 'O' && 'Otro'}
+                            {(guest.gender === null || guest.gender === '') && 'No especificado'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {guest.is_attending === true && (
@@ -695,7 +806,7 @@ useEffect(() => {
                         </tr>
                         {guest.id !== undefined && expandedGuests[guest.id] && (
                           <tr>
-                            <td colSpan={5} className="px-6 py-4">
+                            <td colSpan={7} className="px-6 py-4">
                               <div className="bg-gray-50 p-4 rounded-lg">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
@@ -716,6 +827,12 @@ useEffect(() => {
                                                 ? "Adulto"
                                                 : "Niño"}
                                               )
+                                              {companion.gender && (
+                                                <span className="ml-1">
+                                                  - {companion.gender === 'M' ? 'Hombre' : 
+                                                      companion.gender === 'F' ? 'Mujer' : 'Otro'}
+                                                </span>
+                                              )}
                                             </span>
                                             {companion.is_attending !==
                                               null && (
