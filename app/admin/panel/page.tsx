@@ -35,6 +35,11 @@ interface GuestStats {
   totalOtherGender: number; // Agregado
 }
 
+const AUTHORIZED_ADMINS = [
+  'miguelmansillarev22@gmail.com',
+  'liliandvl01@gmail.com', // Agrega aquí el primer email adicional
+];
+
 export default function AdminPanel() {
   const router = useRouter();
   const [mainGuest, setMainGuest] = useState<MainGuest>({
@@ -79,17 +84,19 @@ export default function AdminPanel() {
     }
   }, [])
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user?.email !== "miguelmansillarev22@gmail.com") {
-        router.push("/login");
-      }
-    };
-    checkAuth();
-  }, [router]);
+useEffect(() => {
+  const checkAuth = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    
+    // Verificar si el email del usuario está en la lista de administradores autorizados
+    if (!session || !AUTHORIZED_ADMINS.includes(session.user?.email || '')) {
+      router.push("/login");
+    }
+  };
+  checkAuth();
+}, [router]);
 
   // Cargar lista de invitados y sus acompañantes al montar el componente
   useEffect(() => {
