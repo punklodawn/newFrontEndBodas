@@ -5,7 +5,9 @@ import { Ticket, Crown } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const MAX_PER_TABLE = 10
-const VISIBLE_GUEST_ROWS = 10
+
+// 🔽 ahora entran más en pantalla
+const VISIBLE_GUEST_ROWS = 12
 const ROTATION_INTERVAL = 5000
 
 const guestTableNames = [
@@ -25,10 +27,7 @@ const guestTableNames = [
   "LAGUNA DE LAS CARICIAS",
 ]
 
-const headTable = {
-  name: "MESA PRINCIPAL",
-}
-
+const headTable = { name: "MESA PRINCIPAL" }
 const guestData: { table: string }[] = []
 
 function pad2(n: number) {
@@ -38,19 +37,19 @@ function addMinutes(date: Date, mins: number) {
   return new Date(date.getTime() + mins * 60000)
 }
 
-
 export default function FlightBoardOlive() {
   const [now, setNow] = useState(new Date())
   const [page, setPage] = useState(0)
 
-  // 🔹 Pausa cualquier audio global
+  // Pausa media (por si hay audio global)
   useEffect(() => {
-    document.querySelectorAll("audio, video").forEach(el => {
-      try { (el as HTMLMediaElement).pause() } catch {}
+    document.querySelectorAll("audio, video").forEach((el) => {
+      try {
+        ;(el as HTMLMediaElement).pause()
+      } catch {}
     })
   }, [])
 
-  // 🔹 Reloj
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(t)
@@ -74,7 +73,7 @@ export default function FlightBoardOlive() {
       const tableNumber = (i + 1).toString()
       const destination = guestTableNames[i]
 
-      const occupied = guestData.filter(g => g.table === tableNumber).length
+      const occupied = guestData.filter((g) => g.table === tableNumber).length
       const available = Math.max(0, MAX_PER_TABLE - occupied)
 
       const time = addMinutes(base, (i + 1) * 3)
@@ -87,10 +86,7 @@ export default function FlightBoardOlive() {
         destination,
         gate: `MESA ${tableNumber}`,
         status: available > 0 ? "DISPONIBLE" : "COMPLETA",
-        remark:
-          available > 0
-            ? `${available}/${MAX_PER_TABLE} LIBRES`
-            : "SIN LUGARES",
+        remark: available > 0 ? `${available}/${MAX_PER_TABLE} LIBRES` : "SIN LUGARES",
       }
     })
 
@@ -101,7 +97,7 @@ export default function FlightBoardOlive() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPage(prev => (prev + 1) % totalPages)
+      setPage((prev) => (prev + 1) % totalPages)
     }, ROTATION_INTERVAL)
     return () => clearInterval(interval)
   }, [totalPages])
@@ -113,27 +109,24 @@ export default function FlightBoardOlive() {
 
   return (
     <div className="h-screen w-full flex flex-col overflow-hidden bg-[#8FAE5D] text-white">
-
-      {/* HEADER */}
-      <div className="px-6 py-4 border-b border-white/30 bg-[#7F9E4F]/40 backdrop-blur-sm">
+      {/* HEADER más bajo */}
+      <div className="px-4 py-2 border-b border-white/30 bg-[#7F9E4F]/35">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="bg-white/20 border border-white/30 px-3 py-1 rounded-md text-xs font-black tracking-widest flex items-center gap-2">
-              <Ticket className="w-4 h-4" />
+            <div className="bg-white/20 border border-white/30 px-2 py-0.5 rounded-md text-[10px] font-black tracking-widest flex items-center gap-2">
+              <Ticket className="w-3.5 h-3.5" />
               DEPARTURES
             </div>
             <div>
-              <div className="text-lg font-black tracking-wider">
-                VUELO LM-2026
-              </div>
-              <div className="text-xs font-bold tracking-widest text-white/80">
+              <div className="text-base font-black tracking-wider">VUELO LM-2026</div>
+              <div className="text-[10px] font-bold tracking-widest text-white/85">
                 TABLERO DE MESAS · ASIENTOS LIBRES
               </div>
             </div>
           </div>
 
           <div className="text-right">
-            <div className="font-mono text-3xl font-black tracking-wider">
+            <div className="font-mono text-2xl font-black tracking-wider">
               {now.toLocaleTimeString("es-ES", {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -141,7 +134,7 @@ export default function FlightBoardOlive() {
                 hour12: false,
               })}
             </div>
-            <div className="text-xs font-bold tracking-widest text-white/80">
+            <div className="text-[10px] font-bold tracking-widest text-white/85">
               14 FEB 2026
             </div>
           </div>
@@ -149,10 +142,9 @@ export default function FlightBoardOlive() {
       </div>
 
       {/* TABLA */}
-      <div className="flex-1 px-6 py-6 overflow-hidden">
-
-        {/* Encabezado columnas */}
-        <div className="grid grid-cols-12 text-xs font-black tracking-widest border-b border-white/30 pb-2">
+      <div className="flex-1 px-4 py-3 overflow-hidden">
+        {/* Encabezado columnas más bajo */}
+        <div className="grid grid-cols-12 text-[10px] font-black tracking-widest border-b border-white/30 pb-1">
           <div className="col-span-2">HORA</div>
           <div className="col-span-2">VUELO</div>
           <div className="col-span-4">DESTINO</div>
@@ -160,71 +152,61 @@ export default function FlightBoardOlive() {
           <div className="col-span-2 text-right">ESTADO</div>
         </div>
 
-        {/* MESA PRINCIPAL FIJA */}
-        <div className="mt-4 mb-4 grid grid-cols-12 items-center bg-white/20 border border-white/30 rounded-lg px-4 py-4">
-          <div className="col-span-2 font-mono font-black text-lg">
-            {headRow.time}
-          </div>
+        {/* MESA PRINCIPAL FIJA más compacta */}
+        <div className="mt-2 mb-2 grid grid-cols-12 items-center bg-white/18 border border-white/28 rounded-lg px-3 py-2">
+          <div className="col-span-2 font-mono font-black text-base">{headRow.time}</div>
 
-          <div className="col-span-2 font-mono font-black flex items-center gap-2">
+          <div className="col-span-2 font-mono font-black flex items-center gap-2 text-sm">
             <Crown className="w-4 h-4" />
             {headRow.flight}
           </div>
 
-          <div className="col-span-4 font-black">
+          <div className="col-span-4 font-black truncate text-sm">
             {headRow.destination}
-            <div className="text-[10px] font-bold tracking-widest text-white/80 mt-1">
+            <div className="text-[9px] font-bold tracking-widest text-white/85 mt-0.5">
               {headRow.remark}
             </div>
           </div>
 
-          <div className="col-span-2 font-mono font-black">
-            {headRow.gate}
-          </div>
+          <div className="col-span-2 font-mono font-black text-sm">{headRow.gate}</div>
 
           <div className="col-span-2 text-right">
-            <span className="px-3 py-1 text-xs font-black rounded-md bg-white/30 border border-white/40">
+            <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-white/26 border border-white/35">
               {headRow.status}
             </span>
           </div>
         </div>
 
-        {/* ROTACIÓN */}
+        {/* ROTACIÓN (sin scroll) */}
         <AnimatePresence mode="wait">
           <motion.div
             key={page}
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-3"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-2"
           >
-            {visibleGuests.map(row => (
+            {visibleGuests.map((row) => (
               <div
                 key={row.key}
-                className="grid grid-cols-12 items-center bg-[#7F9E4F]/30 border border-white/25 rounded-lg px-4 py-4"
+                className="grid grid-cols-12 items-center bg-[#7F9E4F]/25 border border-white/22 rounded-lg px-3 py-2"
               >
-                <div className="col-span-2 font-mono font-black text-lg">
-                  {row.time}
-                </div>
+                <div className="col-span-2 font-mono font-black text-base">{row.time}</div>
 
-                <div className="col-span-2 font-mono font-black">
-                  {row.flight}
-                </div>
+                <div className="col-span-2 font-mono font-black text-sm">{row.flight}</div>
 
-                <div className="col-span-4 font-black truncate">
+                <div className="col-span-4 font-black truncate text-sm">
                   {row.destination}
-                  <div className="text-[10px] font-bold tracking-widest text-white/80 mt-1">
+                  <div className="text-[9px] font-bold tracking-widest text-white/85 mt-0.5">
                     {row.remark}
                   </div>
                 </div>
 
-                <div className="col-span-2 font-mono font-black">
-                  {row.gate}
-                </div>
+                <div className="col-span-2 font-mono font-black text-sm">{row.gate}</div>
 
                 <div className="col-span-2 text-right">
-                  <span className="px-3 py-1 text-xs font-black rounded-md bg-white/25 border border-white/30">
+                  <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-white/22 border border-white/28">
                     {row.status}
                   </span>
                 </div>
@@ -233,14 +215,13 @@ export default function FlightBoardOlive() {
           </motion.div>
         </AnimatePresence>
 
-        <div className="mt-4 text-center text-xs font-black tracking-widest text-white/80">
+        <div className="mt-2 text-center text-[10px] font-black tracking-widest text-white/85">
           PÁGINA {page + 1}/{totalPages}
         </div>
-
       </div>
 
-      {/* FOOTER */}
-      <div className="border-t border-white/30 py-3 text-center text-xs font-black tracking-widest bg-[#7F9E4F]/40">
+      {/* FOOTER más bajo */}
+      <div className="border-t border-white/30 py-2 text-center text-[10px] font-black tracking-widest bg-[#7F9E4F]/35">
         ELIJA UNA MESA DISPONIBLE · ASIENTOS LIBRES · ¡BUEN VIAJE!
       </div>
     </div>
