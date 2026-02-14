@@ -38,6 +38,7 @@ function addMinutes(date: Date, mins: number) {
   return new Date(date.getTime() + mins * 60000)
 }
 
+
 export default function FlightBoardOlive() {
   const [now, setNow] = useState(new Date())
   const [page, setPage] = useState(0)
